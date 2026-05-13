@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" width="800" height="240">
+  <title>SET — full horizontal lockup (header, footer, business card)</title>
+  
+  <text x="20" y="160" class="m" fill="#0b0b0b">
+    <tspan>S</tspan><tspan opacity="0.5">E</tspan><tspan>T</tspan>
+  </text>
+  <line x1="290" y1="50" x2="290" y2="190" stroke="#0b0b0b" stroke-width="2" opacity="0.4"></line>
+  <text x="320" y="100" class="name" fill="#0b0b0b">SUSTAINABLE</text>
+  <text x="320" y="140" class="name" fill="#0b0b0b">EDTECH</text>
+  <text x="320" y="180" class="name" fill="#0b0b0b">ROMANIA</text>
+</svg>

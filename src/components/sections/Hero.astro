@@ -1,0 +1,75 @@
+---
+import Monogram from '../Monogram.astro';
+import Button from '../Button.astro';
+import type { Messages } from '../../i18n/ro';
+
+interface Props {
+  t: Messages;
+}
+
+const { t } = Astro.props;
+---
+
+<section id="hero" class="set-hero">
+  <div class="set-hero__inner">
+    <div class="set-hero__monogram">
+      <Monogram size="xl" color="black" />
+    </div>
+
+    <p class="set-eyebrow">{t.hero.eyebrow}</p>
+    <h1 class="set-display-md set-hero__title">{t.hero.title}</h1>
+    <p class="set-lead set-hero__subtitle">{t.hero.subtitle}</p>
+
+    <div class="set-hero__actions">
+      <Button href="#contact" variant="default" size="lg">{t.hero.ctaPrimary} →</Button>
+      <Button href="#servicii" variant="secondary" size="lg">{t.hero.ctaSecondary}</Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .set-hero {
+    background: var(--set-yellow);
+    color: var(--set-black);
+    border-bottom: 2px solid var(--set-black);
+    padding: 80px 32px 96px;
+    text-align: center;
+  }
+  .set-hero__inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+  .set-hero__monogram {
+    margin-bottom: 16px;
+    line-height: 0.85;
+  }
+  .set-hero__title {
+    max-width: 900px;
+    margin: 0;
+  }
+  .set-hero__subtitle {
+    max-width: 760px;
+    margin: 0;
+    opacity: 0.75;
+  }
+  .set-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 16px;
+  }
+
+  @media (max-width: 768px) {
+    .set-hero { padding: 56px 20px 72px; }
+    /* monograma uriasa pe mobile devine prea mare — o restrangem */
+    .set-hero__monogram :global(.set-monogram) {
+      font-size: 140px !important;
+    }
+    .set-hero__title { font-size: 48px; }
+  }
+</style>

@@ -1,0 +1,45 @@
+---
+/**
+ * SET Button — randeaza <a> daca primeste href, altfel <button>.
+ */
+interface Props {
+  variant?: 'default' | 'brand' | 'primary' | 'danger' | 'secondary' | 'ghost';
+  size?: 'default' | 'lg';
+  href?: string;
+  type?: 'button' | 'submit' | 'reset';
+  class?: string;
+  rel?: string;
+  target?: string;
+}
+
+const {
+  variant = 'default',
+  size = 'default',
+  href,
+  type = 'button',
+  class: className = '',
+  rel,
+  target,
+} = Astro.props;
+
+const classes = [
+  'set-btn',
+  variant !== 'default' ? `set-btn--${variant}` : '',
+  size === 'lg' ? 'set-btn--lg' : '',
+  className,
+]
+  .filter(Boolean)
+  .join(' ');
+---
+
+{
+  href ? (
+    <a class={classes} href={href} rel={rel} target={target}>
+      <slot />
+    </a>
+  ) : (
+    <button class={classes} type={type}>
+      <slot />
+    </button>
+  )
+}

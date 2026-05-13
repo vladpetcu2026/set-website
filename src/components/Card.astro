@@ -1,0 +1,47 @@
+---
+/**
+ * SET Card — variant determina culoarea border-top.
+ * Continut prin slots: <Card><span slot="num">01</span><h3 slot="title">...</h3><p>body</p></Card>
+ */
+interface Props {
+  variant?: 'default' | 'brand' | 'primary' | 'danger' | 'success';
+  num?: string;
+  title?: string;
+  numColor?: 'black' | 'brand' | 'primary' | 'danger' | 'success';
+  class?: string;
+}
+
+const {
+  variant = 'default',
+  num,
+  title,
+  numColor,
+  class: className = '',
+} = Astro.props;
+
+const classes = [
+  'set-card',
+  variant !== 'default' ? `set-card--${variant}` : '',
+  className,
+]
+  .filter(Boolean)
+  .join(' ');
+
+const numColorMap: Record<string, string> = {
+  black: 'var(--set-black)',
+  brand: 'var(--set-yellow)',
+  primary: 'var(--set-cobalt)',
+  danger: 'var(--set-vermilion)',
+  success: 'var(--set-lime)',
+};
+
+const numStyle = numColor ? `color: ${numColorMap[numColor]};` : '';
+---
+
+<article class={classes}>
+  {num && <div class="set-card__num" style={numStyle}>{num}</div>}
+  {title && <h3 class="set-card__title">{title}</h3>}
+  <div class="set-card__body">
+    <slot />
+  </div>
+</article>

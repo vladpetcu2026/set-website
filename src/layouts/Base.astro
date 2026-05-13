@@ -1,0 +1,112 @@
+---
+/**
+ * Base layout — schelet HTML comun pentru toate paginile.
+ *
+ * Props:
+ *   title       — meta title (obligatoriu)
+ *   description — meta description
+ *   lang        — "ro" | "en" (default: "ro")
+ *   ogImage     — path absolut sau relativ catre imagine OG
+ */
+interface Props {
+  title: string;
+  description?: string;
+  lang?: 'ro' | 'en';
+  ogImage?: string;
+}
+
+const {
+  title,
+  description = 'Sisteme complicate, traduse in produse digitale clare. Practica de simplificare si digitalizare pentru universitati, institutii publice si companii.',
+  lang = 'ro',
+  ogImage = '/logo/og-image.svg',
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+
+// Schema.org Organization — pentru imbunatatire SEO si rich results
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Sustainable EdTech Romania',
+  alternateName: 'SET',
+  legalName: 'SUSTAINABLE EDTECH ROMANIA S.R.L.',
+  url: 'https://sustainabletech.ro',
+  logo: 'https://sustainabletech.ro/logo/set-monogram-yellow.svg',
+  email: 'contact@sustainabletech.ro',
+  vatID: 'RO41226189',
+  identifier: [
+    { '@type': 'PropertyValue', name: 'CUI', value: 'RO41226189' },
+    { '@type': 'PropertyValue', name: 'Registrul Comertului', value: 'J2019002422354' },
+  ],
+  foundingDate: '2019-06-05',
+  areaServed: ['RO', 'EU'],
+  knowsAbout: [
+    'Process simplification',
+    'Custom internal applications',
+    'Workflow automation',
+    'Digital transformation',
+    'GDPR compliance',
+  ],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'sales',
+    email: 'contact@sustainabletech.ro',
+    availableLanguage: ['Romanian', 'English'],
+  },
+  sameAs: ['https://www.linkedin.com/in/vladpetcu/'],
+};
+
+import '../styles/global.css';
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <link rel="icon" type="image/svg+xml" href="/logo/favicon.svg" />
+
+    {/* Open Graph */}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site).toString()} />
+    <meta property="og:locale" content={lang === 'ro' ? 'ro_RO' : 'en_US'} />
+
+    {/* Twitter / X */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, Astro.site).toString()} />
+
+    {/* hreflang */}
+    <link rel="alternate" hreflang="ro" href={new URL('/', Astro.site).toString()} />
+    <link rel="alternate" hreflang="en" href={new URL('/en/', Astro.site).toString()} />
+    <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site).toString()} />
+
+    {/* Schema.org Organization JSON-LD */}
+    <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+
+    {/*
+      Cloudflare Web Analytics (privacy-friendly, fara cookies).
+      Pentru a activa:
+        1. Cloudflare dashboard → sustainabletech.ro → Analytics → Web Analytics → Enable.
+        2. Copiaza JSON beacon token (string uuid).
+        3. Inlocuieste BEACON_TOKEN_HERE de mai jos cu valoarea ta si decomenteaza.
+
+      <script defer src='https://static.cloudflareinsights.com/beacon.min.js'
+        data-cf-beacon='{"token": "BEACON_TOKEN_HERE"}'></script>
+    */}
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

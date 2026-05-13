@@ -1,0 +1,37 @@
+---
+interface Props {
+  label: string;
+  value: string;
+  delta?: string;
+  accent?: 'brand' | 'primary' | 'danger' | 'success';
+  deltaVariant?: 'success' | 'primary' | 'danger';
+  class?: string;
+}
+
+const {
+  label,
+  value,
+  delta,
+  accent,
+  deltaVariant,
+  class: className = '',
+} = Astro.props;
+
+const classes = [
+  'set-kpi',
+  accent ? `set-kpi--accent-${accent}` : '',
+  className,
+]
+  .filter(Boolean)
+  .join(' ');
+---
+
+<div class={classes}>
+  <div class="set-kpi__label">{label}</div>
+  <div class="set-kpi__value">{value}</div>
+  {delta && (
+    <div class={`set-kpi__delta ${deltaVariant ? `set-kpi__delta--${deltaVariant}` : ''}`}>
+      {delta}
+    </div>
+  )}
+</div>

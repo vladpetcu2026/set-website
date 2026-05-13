@@ -1,0 +1,52 @@
+---
+import Card from '../Card.astro';
+import type { Messages } from '../../i18n/ro';
+
+interface Props {
+  t: Messages;
+}
+
+const { t } = Astro.props;
+
+type Accent = 'brand' | 'primary' | 'danger' | 'success';
+---
+
+<section id="proces" class="set-section">
+  <div class="set-section__inner">
+    <p class="set-eyebrow">{t.process.eyebrow}</p>
+    <h2 class="set-headline set-process__title">{t.process.title}</h2>
+
+    <div class="set-process__grid">
+      {
+        t.process.steps.map((step) => (
+          <Card
+            variant={step.accent as Accent}
+            num={step.num}
+            numColor={step.accent as Accent}
+            title={step.title}
+          >
+            {step.body}
+          </Card>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .set-process__title {
+    max-width: 900px;
+    margin: 8px 0 56px;
+  }
+  .set-process__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  @media (max-width: 1100px) {
+    .set-process__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .set-process__grid { grid-template-columns: 1fr; }
+  }
+</style>

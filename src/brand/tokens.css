@@ -1,0 +1,119 @@
+/* ──────────────────────────────────────────────────────────
+   SET — Sustainable EdTech Romania
+   Design tokens. Importa-l o singura data, la radacina:
+
+     @import "./brand/tokens.css";
+
+   Toate variabilele incep cu --set- pentru izolare.
+   ────────────────────────────────────────────────────────── */
+
+:root {
+  /* core palette */
+  --set-black:     #0b0b0b;
+  --set-white:     #ffffff;
+  --set-yellow:    #f0db4f;   /* signal / brand */
+  --set-cobalt:    #1d4ed8;   /* date · link · primar UI */
+  --set-vermilion: #e8412a;   /* alerta · contrast */
+  --set-lime:      #84cc16;   /* crestere · success */
+
+  /* surfaces */
+  --set-bone:      #f4f1ea;   /* off-white pentru section breaks */
+  --set-ash:       #1a1a1a;   /* near-black surface */
+
+  /* neutrals */
+  --set-dim:       #7a7a7a;
+  --set-line:      rgba(11, 11, 11, 0.15);
+
+  /* semantic aliases — folositi astea in componente, nu cele de mai sus */
+  --set-fg:           var(--set-black);
+  --set-bg:           var(--set-white);
+  --set-brand:        var(--set-yellow);
+  --set-primary:      var(--set-cobalt);
+  --set-danger:       var(--set-vermilion);
+  --set-success:      var(--set-lime);
+  --set-muted:        var(--set-dim);
+  --set-border:       var(--set-black);
+
+  /* typography */
+  --set-font-mono:    "Spline Sans Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --set-font:         var(--set-font-mono);
+
+  /* type scale (px @ 16 base) */
+  --set-text-xs:      12px;
+  --set-text-sm:      14px;
+  --set-text-base:    16px;
+  --set-text-md:      18px;
+  --set-text-lg:      22px;
+  --set-text-xl:      28px;       /* lead */
+  --set-text-2xl:     36px;       /* subhead */
+  --set-text-3xl:     56px;       /* headline */
+  --set-text-4xl:     88px;       /* display-md */
+  --set-text-5xl:     116px;      /* display-lg */
+  --set-text-6xl:     156px;      /* display-xl */
+
+  /* tracking */
+  --set-track-tight:  -0.02em;
+  --set-track-display:-0.04em;
+  --set-track-caps:   0.12em;     /* small caps / eyebrow */
+
+  /* radii — Brut style: aproape niciodata rotunjit */
+  --set-radius-none:  0;
+  --set-radius-sm:    2px;
+  /* nu mai mari */
+
+  /* borders */
+  --set-border-w:     1.5px;
+  --set-border-w-md:  2px;
+
+  /* spacing scale (px) — pasi de 4 */
+  --set-space-1:      4px;
+  --set-space-2:      8px;
+  --set-space-3:      12px;
+  --set-space-4:      16px;
+  --set-space-5:      20px;
+  --set-space-6:      24px;
+  --set-space-8:      32px;
+  --set-space-10:     40px;
+  --set-space-12:     48px;
+  --set-space-16:     64px;
+  --set-space-20:     80px;
+
+  /* shadow — folosit rar; Brut nu prea are shadow-uri */
+  --set-shadow-sm:    0 1px 0 rgba(11,11,11,0.08);
+  --set-shadow-md:    0 2px 0 rgba(11,11,11,0.12);
+}
+
+/* ── base ─────────────────────────────────────────────── */
+html, body {
+  font-family: var(--set-font);
+  color: var(--set-fg);
+  background: var(--set-bg);
+  font-feature-settings: "ss01", "tnum";   /* tabular numerals + stylistic set 1 */
+}
+
+/* ── type utilities (optional — copy ce-ti trebuie) ───── */
+.set-display-xl { font-size: var(--set-text-6xl); line-height: 0.92; letter-spacing: var(--set-track-display); font-weight: 700; }
+.set-display-lg { font-size: var(--set-text-5xl); line-height: 0.95; letter-spacing: var(--set-track-display); font-weight: 700; }
+.set-display-md { font-size: var(--set-text-4xl); line-height: 0.98; letter-spacing: -0.03em; font-weight: 600; }
+.set-headline   { font-size: var(--set-text-3xl); line-height: 1.05; letter-spacing: var(--set-track-tight); font-weight: 600; }
+.set-subhead    { font-size: var(--set-text-2xl); line-height: 1.15; letter-spacing: -0.01em; font-weight: 500; }
+.set-lead       { font-size: var(--set-text-xl);  line-height: 1.4; font-weight: 400; }
+.set-body-lg    { font-size: var(--set-text-lg);  line-height: 1.5; font-weight: 400; }
+.set-body       { font-size: var(--set-text-md);  line-height: 1.55; font-weight: 400; }
+.set-caption    { font-size: var(--set-text-sm);  letter-spacing: var(--set-track-caps); text-transform: uppercase; font-weight: 500; }
+.set-eyebrow    { font-size: var(--set-text-base); letter-spacing: var(--set-track-caps); text-transform: uppercase; font-weight: 500; opacity: 0.6; }
+
+/* ── monograma SET ─────────────────────────────────────
+   Folosita cand vrei o monograma rapida fara SVG.
+   Pentru orice utilizare "oficiala" (favicon, og-image, etc.)
+   foloseste fisierele din ./logo/ in schimb. */
+.set-monogram {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--set-font-mono);
+  font-weight: 700;
+  line-height: 0.85;
+  letter-spacing: -0.06em;
+  color: var(--set-fg);
+}
+.set-monogram > span:nth-child(2) { opacity: 0.5; }

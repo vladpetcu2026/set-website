@@ -1,0 +1,138 @@
+---
+/**
+ * Ready? Set. Go. — narativa SET in 3 faze.
+ *   - Ready? — clientul recunoaste nevoia
+ *   - Set.   — SET intervine (referinta la brand)
+ *   - Go!    — clientul foloseste autonom
+ *
+ * Cuvantul "Set." e stilizat ca brand badge (galben), reintarind numele firmei.
+ */
+import type { Messages } from '../../i18n/ro';
+
+interface Props {
+  t: Messages;
+}
+
+const { t } = Astro.props;
+const phases = t.readyGo.phases;
+---
+
+<section id="ready-set-go" class="set-section">
+  <div class="set-section__inner">
+    <p class="set-eyebrow">{t.readyGo.eyebrow}</p>
+
+    <h2 class="set-readygo__title" aria-label={`${t.readyGo.titlePrefix} ${t.readyGo.phrase.ready} ${t.readyGo.phrase.set} ${t.readyGo.phrase.go}`}>
+      <span class="set-readygo__title-prefix">{t.readyGo.titlePrefix}</span>
+      <span class="set-readygo__phrase">
+        <span class="set-readygo__word set-readygo__word--ready">{t.readyGo.phrase.ready}</span>
+        <span class="set-readygo__word set-readygo__word--set">{t.readyGo.phrase.set}</span>
+        <span class="set-readygo__word set-readygo__word--go">{t.readyGo.phrase.go}</span>
+      </span>
+    </h2>
+
+    <div class="set-readygo__grid">
+      {
+        phases.map((phase, i) => (
+          <div class={`set-readygo__col set-readygo__col--${i}`}>
+            <span class={`set-readygo__phase set-readygo__phase--${i}`}>{phase.word}</span>
+            <p class="set-caption set-readygo__who">{phase.who}</p>
+            <p class="set-body-lg set-readygo__body">{phase.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .set-readygo__title {
+    margin: 12px 0 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .set-readygo__title-prefix {
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 1.3;
+    opacity: 0.6;
+  }
+  .set-readygo__phrase {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    font-size: 88px;
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    font-weight: 600;
+  }
+  .set-readygo__word--ready { color: var(--set-cobalt); }
+  .set-readygo__word--set {
+    background: var(--set-yellow);
+    color: var(--set-black);
+    padding: 0 18px 6px;
+    line-height: 1;
+  }
+  .set-readygo__word--go { color: var(--set-lime); }
+
+  .set-readygo__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 2px solid var(--set-black);
+  }
+  .set-readygo__col {
+    padding: 28px 32px 28px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .set-readygo__col + .set-readygo__col {
+    border-left: 2px solid var(--set-black);
+    padding-left: 32px;
+  }
+  .set-readygo__phase {
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    align-self: flex-start;
+  }
+  .set-readygo__phase--0 { color: var(--set-cobalt); }
+  .set-readygo__phase--1 {
+    background: var(--set-yellow);
+    color: var(--set-black);
+    padding: 0 12px 4px;
+  }
+  .set-readygo__phase--2 { color: var(--set-lime); }
+  .set-readygo__who {
+    opacity: 0.55;
+    margin: 4px 0 0;
+  }
+  .set-readygo__body {
+    margin: 12px 0 0;
+    opacity: 0.85;
+  }
+
+  @media (max-width: 900px) {
+    .set-readygo__title-prefix { font-size: 20px; }
+    .set-readygo__phrase { font-size: 56px; gap: 12px; }
+    .set-readygo__grid {
+      grid-template-columns: 1fr;
+      border-top: 2px solid var(--set-black);
+    }
+    .set-readygo__col + .set-readygo__col {
+      border-left: none;
+      border-top: 2px solid var(--set-black);
+      padding-left: 0;
+      padding-top: 28px;
+    }
+    .set-readygo__col {
+      padding: 28px 0;
+    }
+    .set-readygo__phase { font-size: 32px; }
+  }
+</style>

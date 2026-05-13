@@ -1,0 +1,94 @@
+---
+import Monogram from './Monogram.astro';
+import type { Messages } from '../i18n/ro';
+
+interface Props {
+  t: Messages;
+}
+
+const { t } = Astro.props;
+
+const year = new Date().getFullYear();
+const isEN = Astro.url.pathname.startsWith('/en');
+const termsHref = isEN ? '/en/terms' : '/termeni';
+const privacyHref = isEN ? '/en/privacy' : '/confidentialitate';
+const cookiesHref = isEN ? '/en/cookies' : '/cookies';
+---
+
+<footer class="set-footer">
+  <div class="set-footer__inner">
+    <div class="set-footer__top">
+      <a class="set-footer__brand" href={isEN ? '/en/' : '/'}>
+        <Monogram size="sm" color="yellow" />
+      </a>
+      <p class="set-footer__legal">{t.footer.legalShort}</p>
+    </div>
+
+    <div class="set-footer__bottom">
+      <p class="set-footer__copyright">© {year} Sustainable EdTech Romania. {t.footer.rights}</p>
+      <nav class="set-footer__links" aria-label="legal">
+        <a href={termsHref}>{t.footer.links.terms}</a>
+        <a href={privacyHref}>{t.footer.links.privacy}</a>
+        <a href={cookiesHref}>{t.footer.links.cookies}</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .set-footer {
+    background: var(--set-black);
+    color: var(--set-white);
+    padding: 56px 32px 32px;
+  }
+  .set-footer__inner {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .set-footer__top {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 40px;
+    align-items: center;
+    padding-bottom: 32px;
+    border-bottom: 1.5px solid rgba(255,255,255,0.2);
+  }
+  .set-footer__legal {
+    font-size: 13px;
+    line-height: 1.6;
+    opacity: 0.75;
+    margin: 0;
+  }
+  .set-footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    padding-top: 24px;
+  }
+  .set-footer__copyright {
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: 0.55;
+    margin: 0;
+  }
+  .set-footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .set-footer__links a {
+    color: var(--set-white);
+    opacity: 0.7;
+    text-decoration: none;
+  }
+  .set-footer__links a:hover { opacity: 1; color: var(--set-yellow); }
+  @media (max-width: 768px) {
+    .set-footer__top { grid-template-columns: 1fr; gap: 24px; }
+  }
+</style>

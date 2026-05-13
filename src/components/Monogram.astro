@@ -1,0 +1,41 @@
+---
+/**
+ * SET monogram — litera din mijloc are opacity 50% (parte din identitate, NU greseala).
+ *
+ * Props:
+ *   size  — preset xs (32) | sm (56) | md (96) | lg (220) | xl (340), sau valoare custom CSS
+ *   color — black | yellow | white (default: black)
+ */
+interface Props {
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | string;
+  color?: 'black' | 'yellow' | 'white';
+  class?: string;
+}
+
+const { size = 'md', color = 'black', class: className = '' } = Astro.props;
+
+const sizePresets: Record<string, string> = {
+  xs: '32px',
+  sm: '56px',
+  md: '96px',
+  lg: '220px',
+  xl: '340px',
+};
+
+const colorMap: Record<string, string> = {
+  black: 'var(--set-black)',
+  yellow: 'var(--set-yellow)',
+  white: 'var(--set-white)',
+};
+
+const fontSize = sizePresets[size] ?? size;
+const fontColor = colorMap[color];
+---
+
+<span
+  class={`set-monogram ${className}`}
+  style={`font-size: ${fontSize}; color: ${fontColor};`}
+  aria-label="SET — Sustainable EdTech Romania"
+>
+  <span>S</span><span>E</span><span>T</span>
+</span>

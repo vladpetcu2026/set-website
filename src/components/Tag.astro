@@ -1,0 +1,20 @@
+---
+interface Props {
+  variant?: 'default' | 'brand' | 'primary' | 'danger' | 'success' | 'black' | 'outline';
+  class?: string;
+}
+
+const { variant = 'default', class: className = '' } = Astro.props;
+
+const classes = [
+  'set-tag',
+  variant !== 'default' ? `set-tag--${variant}` : '',
+  className,
+]
+  .filter(Boolean)
+  .join(' ');
+---
+
+<span class={classes}>
+  <slot />
+</span>

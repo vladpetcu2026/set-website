@@ -1,0 +1,131 @@
+---
+import Monogram from '../Monogram.astro';
+import Tag from '../Tag.astro';
+import type { Messages } from '../../i18n/ro';
+
+interface Props {
+  t: Messages;
+}
+
+const { t } = Astro.props;
+---
+
+<section id="despre" class="set-section">
+  <div class="set-section__inner">
+    <p class="set-eyebrow">{t.about.eyebrow}</p>
+
+    <div class="set-about__grid">
+      <div class="set-about__placeholder" aria-hidden="true">
+        <Monogram size="lg" color="black" />
+        <span class="set-about__initials">VP</span>
+      </div>
+
+      <div class="set-about__content">
+        <h2 class="set-display-md set-about__name">{t.about.title}</h2>
+        <p class="set-caption set-about__role" style="color: var(--set-cobalt); margin: 0 0 32px;">
+          {t.about.role}
+        </p>
+
+        <p class="set-body-lg set-about__bio">{t.about.bio}</p>
+
+        <h3 class="set-subhead set-about__sub">{t.about.positionsTitle}</h3>
+        <ul class="set-about__positions">
+          {t.about.positions.map((p) => <li>{p}</li>)}
+        </ul>
+
+        <h3 class="set-subhead set-about__sub">{t.about.workTitle}</h3>
+        <p class="set-body-lg set-about__work">{t.about.work}</p>
+
+        <div class="set-about__footer">
+          <div>
+            <p class="set-caption set-about__edu-label">{t.about.educationTitle}</p>
+            <ul class="set-about__education">
+              {t.about.education.map((e) => <li>{e}</li>)}
+            </ul>
+          </div>
+          <a class="set-about__linkedin" href={t.about.linkedinUrl} target="_blank" rel="noopener">
+            {t.about.linkedinLabel} →
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .set-about__grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 64px;
+    align-items: start;
+    margin-top: 16px;
+  }
+  .set-about__placeholder {
+    aspect-ratio: 1;
+    border: 2px solid var(--set-black);
+    background: var(--set-bone);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 32px;
+  }
+  .set-about__initials {
+    font-family: var(--set-font);
+    font-size: 56px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: var(--set-cobalt);
+  }
+  .set-about__name { margin: 0; }
+  .set-about__bio { margin: 0 0 48px; }
+  .set-about__sub {
+    margin: 32px 0 16px;
+    font-size: 22px;
+  }
+  .set-about__positions,
+  .set-about__education {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .set-about__positions li {
+    padding: 14px 0;
+    border-bottom: 1.5px solid var(--set-line);
+    font-size: 17px;
+    line-height: 1.55;
+  }
+  .set-about__positions li:last-child { border-bottom: none; }
+  .set-about__work { margin: 0 0 48px; }
+  .set-about__footer {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 32px;
+    align-items: end;
+    padding-top: 32px;
+    border-top: 1.5px solid var(--set-line);
+  }
+  .set-about__edu-label { opacity: 0.6; margin: 0 0 12px; }
+  .set-about__education li {
+    font-size: 15px;
+    padding: 4px 0;
+  }
+  .set-about__linkedin {
+    font-size: 14px;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--set-cobalt);
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--set-cobalt);
+    padding-bottom: 4px;
+    font-weight: 600;
+  }
+  .set-about__linkedin:hover { opacity: 0.8; }
+
+  @media (max-width: 900px) {
+    .set-about__grid { grid-template-columns: 1fr; gap: 32px; }
+    .set-about__placeholder { max-width: 320px; }
+    .set-about__footer { grid-template-columns: 1fr; align-items: start; }
+  }
+</style>

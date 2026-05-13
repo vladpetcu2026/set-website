@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/sections/Hero.astro';
+import ReadyGo from '../components/sections/ReadyGo.astro';
+import ForWhom from '../components/sections/ForWhom.astro';
+import Services from '../components/sections/Services.astro';
+import Process from '../components/sections/Process.astro';
+import CaseStudies from '../components/sections/CaseStudies.astro';
+import Positioning from '../components/sections/Positioning.astro';
+import About from '../components/sections/About.astro';
+import FAQ from '../components/sections/FAQ.astro';
+import Contact from '../components/sections/Contact.astro';
+import Footer from '../components/Footer.astro';
+
+import { ro as t } from '../i18n/ro';
+---
+
+<Base title={t.meta.title} description={t.meta.description} lang="ro">
+  <Nav t={t} />
+
+  <main>
+    <Hero t={t} />
+    <ReadyGo t={t} />
+    <ForWhom t={t} />
+    <Services t={t} />
+    <Process t={t} />
+    <CaseStudies t={t} />
+    <Positioning t={t} />
+    <About t={t} />
+    <FAQ t={t} />
+    <Contact t={t} />
+  </main>
+
+  <Footer t={t} />
+</Base>

@@ -1,0 +1,107 @@
+---
+import Tag from '../Tag.astro';
+import Kpi from '../Kpi.astro';
+import type { Messages } from '../../i18n/ro';
+
+interface Props {
+  t: Messages;
+}
+
+const { t } = Astro.props;
+
+type Accent = 'brand' | 'primary' | 'success';
+const accents: Accent[] = ['primary', 'brand', 'success'];
+const tagVariants: Array<'primary' | 'brand' | 'success'> = ['primary', 'brand', 'success'];
+---
+
+<section id="cazuri" class="set-section">
+  <div class="set-section__inner">
+    <p class="set-eyebrow">{t.cases.eyebrow}</p>
+    <h2 class="set-headline set-cases__title">{t.cases.title}</h2>
+    <p class="set-body-lg set-cases__intro">{t.cases.body}</p>
+
+    <div class="set-cases__grid">
+      {
+        t.cases.items.map((item, i) => (
+          <article class={`set-case set-case--${accents[i]}`}>
+            <div class="set-case__head">
+              <Tag variant={tagVariants[i]}>{item.tag}</Tag>
+            </div>
+            <h3 class="set-case__title">{item.title}</h3>
+            <p class="set-case__body">{item.body}</p>
+
+            <div class="set-case__kpis">
+              {item.kpis.map((k, ki) => (
+                <Kpi label={k.label} value={k.value} accent={accents[(ki + i) % 3]} />
+              ))}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .set-cases__title { margin: 8px 0 16px; max-width: 900px; }
+  .set-cases__intro { margin: 0 0 48px; opacity: 0.75; max-width: 760px; }
+
+  .set-cases__grid {
+    display: grid;
+    gap: 32px;
+  }
+  .set-case {
+    border: 2px solid var(--set-black);
+    padding: 32px 36px;
+    background: var(--set-white);
+    display: grid;
+    grid-template-columns: 2fr 3fr;
+    gap: 40px;
+    align-items: start;
+  }
+  .set-case--brand   { border-top: 6px solid var(--set-yellow); }
+  .set-case--primary { border-top: 6px solid var(--set-cobalt); }
+  .set-case--success { border-top: 6px solid var(--set-lime); }
+
+  .set-case__head { grid-column: 1 / -1; }
+  .set-case__title {
+    grid-column: 1;
+    font-size: 36px;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  .set-case__body {
+    grid-column: 1;
+    font-size: 17px;
+    line-height: 1.55;
+    opacity: 0.75;
+    margin: 0;
+  }
+  .set-case__kpis {
+    grid-column: 2;
+    grid-row: 2 / span 2;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 2px solid var(--set-black);
+  }
+  .set-case__kpis :global(.set-kpi + .set-kpi) {
+    border-left: 2px solid var(--set-black);
+  }
+
+  @media (max-width: 900px) {
+    .set-case {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .set-case__head,
+    .set-case__title,
+    .set-case__body,
+    .set-case__kpis {
+      grid-column: 1;
+      grid-row: auto;
+    }
+    .set-case__title { font-size: 28px; }
+  }
+</style>

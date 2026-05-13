@@ -1,0 +1,43 @@
+---
+import Base from '../layouts/Base.astro';
+import Monogram from '../components/Monogram.astro';
+import Button from '../components/Button.astro';
+---
+
+<Base title="Pagina nu a fost gasita — SET" description="404 — pagina cautata nu exista." lang="ro">
+  <main class="set-404">
+    <Monogram size="lg" color="black" />
+    <p class="set-eyebrow set-404__code">404</p>
+    <h1 class="set-display-md set-404__title">Pagina nu a fost gasita.</h1>
+    <p class="set-lead set-404__body">
+      Link-ul pe care ai venit nu mai exista sau a fost mutat.
+    </p>
+    <div class="set-404__actions">
+      <Button href="/" variant="default" size="lg">Inapoi la home →</Button>
+      <Button href="/#contact" variant="secondary" size="lg">Scrie-ne</Button>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .set-404 {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 64px 32px;
+    gap: 16px;
+  }
+  .set-404__code { color: var(--set-vermilion); opacity: 1; margin-top: 24px; }
+  .set-404__title { max-width: 800px; margin: 0; }
+  .set-404__body { max-width: 600px; margin: 0; opacity: 0.75; }
+  .set-404__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 24px;
+  }
+</style>

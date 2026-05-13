@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240">
+  <title>SET — primary lockup on yellow square (for app icons, social avatars)</title>
+  
+  <rect width="240" height="240" fill="#f0db4f"></rect>
+  <text x="120" y="135" text-anchor="middle" class="m" fill="#0b0b0b">
+    <tspan>S</tspan><tspan opacity="0.5">E</tspan><tspan>T</tspan>
+  </text>
+  <text x="120" y="180" text-anchor="middle" class="t" fill="#0b0b0b">SUSTAINABLE · EDTECH · ROMANIA</text>
+</svg>

@@ -1,0 +1,52 @@
+---
+import Tag from '../Tag.astro';
+import type { Messages } from '../../i18n/ro';
+
+interface Props {
+  t: Messages;
+}
+
+const { t } = Astro.props;
+
+const tagVariants: Array<'brand' | 'primary' | 'success'> = ['brand', 'primary', 'success'];
+---
+
+<section id="pentru-cine" class="set-section">
+  <div class="set-section__inner">
+    <p class="set-eyebrow">{t.forWhom.eyebrow}</p>
+    <h2 class="set-headline set-forwhom__title">{t.forWhom.title}</h2>
+
+    <div class="set-forwhom__grid">
+      {
+        t.forWhom.items.map((item, i) => (
+          <div class="set-forwhom__col">
+            <Tag variant={tagVariants[i]}>{item.tag}</Tag>
+            <p class="set-body-lg">{item.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .set-forwhom__title {
+    max-width: 900px;
+    margin: 8px 0 56px;
+  }
+  .set-forwhom__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+  }
+  .set-forwhom__col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .set-forwhom__col p { opacity: 0.85; }
+  @media (max-width: 900px) {
+    .set-forwhom__grid { grid-template-columns: 1fr; gap: 32px; }
+  }
+</style>

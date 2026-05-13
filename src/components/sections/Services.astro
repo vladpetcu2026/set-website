@@ -1,0 +1,79 @@
+---
+import type { Messages } from '../../i18n/ro';
+
+interface Props {
+  t: Messages;
+}
+
+const { t } = Astro.props;
+---
+
+<section id="servicii" class="set-section set-section--bone">
+  <div class="set-section__inner">
+    <div class="set-services__grid">
+      <div class="set-services__intro">
+        <p class="set-eyebrow">{t.services.eyebrow}</p>
+        <h2 class="set-display-md set-services__title">{t.services.title}</h2>
+        <p class="set-body-lg set-services__body">{t.services.body}</p>
+      </div>
+
+      <ol class="set-services__list">
+        {
+          t.services.items.map((item, i) => (
+            <li class="set-services__item">
+              <span class="set-services__num">
+                {(i + 1).toString().padStart(2, '0')}
+              </span>
+              <span class="set-services__name">{item}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .set-services__grid {
+    display: grid;
+    grid-template-columns: 2fr 3fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .set-services__title {
+    margin: 8px 0 24px;
+  }
+  .set-services__body { opacity: 0.75; max-width: 480px; }
+
+  .set-services__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .set-services__item {
+    display: flex;
+    gap: 24px;
+    align-items: baseline;
+    padding: 18px 0;
+    border-bottom: 1.5px solid var(--set-black);
+  }
+  .set-services__item:last-child { border-bottom: none; }
+  .set-services__num {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1.4px;
+    color: var(--set-cobalt);
+    min-width: 48px;
+  }
+  .set-services__name {
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  @media (max-width: 900px) {
+    .set-services__grid { grid-template-columns: 1fr; gap: 40px; }
+    .set-services__name { font-size: 22px; }
+  }
+</style>

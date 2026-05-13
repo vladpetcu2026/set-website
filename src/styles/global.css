@@ -1,0 +1,53 @@
+/* SET — global stylesheet
+ * Ordine de import:
+ *   1. Font Spline Sans Mono (Google Fonts)
+ *   2. Brand tokens (single source of truth — culori, type scale, spacing)
+ *   3. Tailwind layers
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Spline+Sans+Mono:wght@400;500;600;700&display=swap');
+@import '../brand/tokens.css';
+@import './components.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ──────────────────────────────────────────────────────────
+   Resetari minimale peste tokens.css (care seteaza deja font + fg/bg pe html/body).
+   ────────────────────────────────────────────────────────── */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  /* Selectie cu galben SET */
+  ::selection {
+    background: var(--set-yellow);
+    color: var(--set-black);
+  }
+}

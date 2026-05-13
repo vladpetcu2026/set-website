@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <title>SET — OG image (1200×630, for share previews)</title>
+  
+  <rect width="1200" height="630" fill="#f0db4f"></rect>
+  <text x="600" y="400" text-anchor="middle" class="m" fill="#0b0b0b">
+    <tspan>S</tspan><tspan opacity="0.5">E</tspan><tspan>T</tspan>
+  </text>
+  <text x="600" y="500" text-anchor="middle" class="t" fill="#0b0b0b">SUSTAINABLE · EDTECH · ROMANIA</text>
+  <text x="40" y="50" class="c" fill="#0b0b0b" opacity="0.6">SET — PITCH · 2026</text>
+  <text x="1160" y="50" text-anchor="end" class="c" fill="#0b0b0b" opacity="0.6">SET.RO</text>
+</svg>

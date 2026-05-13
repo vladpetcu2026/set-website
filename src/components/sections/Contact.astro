@@ -1,0 +1,86 @@
+---
+import Button from '../Button.astro';
+import type { Messages } from '../../i18n/ro';
+
+interface Props {
+  t: Messages;
+}
+
+const { t } = Astro.props;
+
+const mailtoHref = `mailto:${t.contact.email}?subject=${encodeURIComponent(
+  t.contact.ctaSubject
+)}&body=${encodeURIComponent(t.contact.ctaBody)}`;
+---
+
+<section id="contact" class="set-section set-section--dark on-dark">
+  <div class="set-section__inner">
+    <p class="set-eyebrow" style="color: var(--set-yellow); opacity: 1;">
+      {t.contact.eyebrow}
+    </p>
+    <h2 class="set-display-md set-contact__title">{t.contact.title}</h2>
+    <p class="set-lead set-contact__body">{t.contact.body}</p>
+
+    <div class="set-contact__cta">
+      <Button href={mailtoHref} variant="brand" size="lg">
+        {t.contact.ctaButton} →
+      </Button>
+      <p class="set-caption set-contact__note">{t.contact.responseNote}</p>
+    </div>
+
+    <div class="set-contact__grid">
+      <div>
+        <p class="set-caption set-contact__label">{t.contact.emailLabel}</p>
+        <a class="set-contact__value" href={`mailto:${t.contact.email}`}>{t.contact.email}</a>
+      </div>
+      <div>
+        <p class="set-caption set-contact__label">{t.contact.phoneLabel}</p>
+        <a class="set-contact__value" href={t.contact.phoneHref}>{t.contact.phone}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .set-contact__title {
+    max-width: 1000px;
+    margin: 8px 0 24px;
+  }
+  .set-contact__body {
+    max-width: 820px;
+    margin: 0 0 48px;
+    opacity: 0.8;
+  }
+  .set-contact__cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 64px;
+  }
+  .set-contact__note { opacity: 0.65; }
+  .set-contact__grid {
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
+    gap: 80px;
+    padding-top: 40px;
+    border-top: 1.5px solid rgba(255,255,255,0.2);
+  }
+  .set-contact__label {
+    opacity: 0.6;
+    margin: 0 0 8px;
+  }
+  .set-contact__value {
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--set-yellow);
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--set-yellow);
+    padding-bottom: 4px;
+  }
+  .set-contact__value:hover { opacity: 0.85; }
+  @media (max-width: 600px) {
+    .set-contact__grid { grid-template-columns: 1fr; gap: 32px; }
+    .set-contact__value { font-size: 18px; }
+  }
+</style>
