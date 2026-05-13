@@ -127,3 +127,4 @@ Pentru analytics privacy-friendly fara cookies:
 ---
 
 *Construit conform plan-website-set-eu.md v8 (13.05.2026).*
+# set-website
