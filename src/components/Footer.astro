@@ -90,5 +90,11 @@ const cookiesHref = isEN ? '/en/cookies' : '/cookies';
   .set-footer__links a:hover { opacity: 1; color: var(--set-yellow); }
   @media (max-width: 768px) {
     .set-footer__top { grid-template-columns: 1fr; gap: 24px; }
+    .set-footer__bottom { flex-direction: column; align-items: flex-start; }
+  }
+  @media (max-width: 480px) {
+    .set-footer { padding: 40px 20px 24px; }
+    .set-footer__legal { font-size: 12px; word-break: break-word; }
+    .set-footer__links { gap: 16px; }
   }
 </style>

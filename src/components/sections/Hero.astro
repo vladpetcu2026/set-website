@@ -70,6 +70,11 @@ const { t } = Astro.props;
     .set-hero__monogram :global(.set-monogram) {
       font-size: 140px !important;
     }
-    .set-hero__title { font-size: 48px; }
+  }
+  @media (max-width: 480px) {
+    .set-hero { padding: 40px 16px 56px; }
+    .set-hero__monogram :global(.set-monogram) {
+      font-size: 96px !important;
+    }
   }
 </style>

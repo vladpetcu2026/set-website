@@ -81,6 +81,12 @@ const mailtoHref = `mailto:${t.contact.email}?subject=${encodeURIComponent(
   .set-contact__value:hover { opacity: 0.85; }
   @media (max-width: 600px) {
     .set-contact__grid { grid-template-columns: 1fr; gap: 32px; }
-    .set-contact__value { font-size: 18px; }
+    .set-contact__value {
+      font-size: 16px;
+      display: inline-block;
+      max-width: 100%;
+    }
+    .set-contact__body { margin-bottom: 32px; }
+    .set-contact__cta { gap: 16px; margin-bottom: 48px; flex-direction: column; align-items: flex-start; }
   }
 </style>

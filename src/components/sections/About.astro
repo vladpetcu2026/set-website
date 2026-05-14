@@ -125,7 +125,15 @@ const { t } = Astro.props;
 
   @media (max-width: 900px) {
     .set-about__grid { grid-template-columns: 1fr; gap: 32px; }
-    .set-about__placeholder { max-width: 320px; }
+    .set-about__placeholder { max-width: 320px; aspect-ratio: 1; }
     .set-about__footer { grid-template-columns: 1fr; align-items: start; }
+  }
+  @media (max-width: 480px) {
+    .set-about__placeholder { padding: 24px; gap: 16px; }
+    .set-about__initials { font-size: 40px; }
+    .set-about__bio,
+    .set-about__work { margin-bottom: 32px; }
+    .set-about__sub { font-size: 20px; margin: 28px 0 12px; }
+    .set-about__positions li { font-size: 15px; padding: 12px 0; }
   }
 </style>

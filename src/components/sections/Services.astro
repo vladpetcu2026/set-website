@@ -76,4 +76,9 @@ const { t } = Astro.props;
     .set-services__grid { grid-template-columns: 1fr; gap: 40px; }
     .set-services__name { font-size: 22px; }
   }
+  @media (max-width: 480px) {
+    .set-services__item { gap: 16px; padding: 14px 0; }
+    .set-services__num { min-width: 36px; font-size: 12px; }
+    .set-services__name { font-size: 18px; line-height: 1.25; }
+  }
 </style>

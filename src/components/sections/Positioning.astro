@@ -63,6 +63,11 @@ const { t } = Astro.props;
   }
   @media (max-width: 768px) {
     .set-pos__grid { grid-template-columns: 1fr; }
-    .set-pos__col li { font-size: 18px; }
+    .set-pos__col { padding: 28px 24px; }
+    .set-pos__col li { font-size: 18px; line-height: 1.35; }
+  }
+  @media (max-width: 480px) {
+    .set-pos__col { padding: 24px 20px; gap: 20px; }
+    .set-pos__col li { font-size: 16px; }
   }
 </style>
