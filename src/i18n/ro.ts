@@ -110,7 +110,7 @@ export const ro = {
         num: '01 → cartografiem',
         title: 'Descifrat',
         body:
-          'Interviuri cu operatorii reali. Harta fluxurilor existente. Identificarea zonelor de frictie.',
+          'Interviuri cu operatorii reali. Harta fluxurilor existente. Identificarea zonelor de frictiune.',
         accent: 'brand',
       },
       {

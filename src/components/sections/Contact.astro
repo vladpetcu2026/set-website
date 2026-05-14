@@ -80,13 +80,15 @@ const mailtoHref = `mailto:${t.contact.email}?subject=${encodeURIComponent(
   }
   .set-contact__value:hover { opacity: 0.85; }
   @media (max-width: 600px) {
-    .set-contact__grid { grid-template-columns: 1fr; gap: 32px; }
+    .set-contact__grid { grid-template-columns: 1fr; gap: 28px; }
     .set-contact__value {
       font-size: 16px;
       display: inline-block;
       max-width: 100%;
+      word-break: break-all;
     }
     .set-contact__body { margin-bottom: 32px; }
-    .set-contact__cta { gap: 16px; margin-bottom: 48px; flex-direction: column; align-items: flex-start; }
+    .set-contact__cta { gap: 16px; margin-bottom: 40px; flex-direction: column; align-items: stretch; }
+    .set-contact__cta :global(.set-btn) { justify-content: center; }
   }
 </style>

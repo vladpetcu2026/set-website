@@ -76,5 +76,7 @@ const { t } = Astro.props;
     .set-hero__monogram :global(.set-monogram) {
       font-size: 96px !important;
     }
+    .set-hero__actions { flex-direction: column; align-items: stretch; width: 100%; max-width: 320px; }
+    .set-hero__actions :global(.set-btn) { justify-content: center; }
   }
 </style>
