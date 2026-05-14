@@ -2,18 +2,97 @@
 import Base from '../layouts/Base.astro';
 import Monogram from '../components/Monogram.astro';
 import Button from '../components/Button.astro';
+
+/**
+ * Pagina 404 — "Help Find The Lost Process"
+ *
+ * Joc mic: vizitatorul ajunge pe 404 si gaseste o schema de proces vechi
+ * cu 8 pasi. Trebuie sa identifice cei 3 redundanti. Cand reuseste:
+ * mesajul "Asta facem la SET zilnic" + butoane de navigare.
+ *
+ * Replay value: ordinea cutiilor se amesteca la load (JS-side, dupa
+ * randarea initiala — sa nu apara FOUC).
+ */
+
+interface Box {
+  id: string;
+  label: string;
+  redundant: boolean;
+}
+
+const boxes: Box[] = [
+  { id: 'cerere', label: 'Cerere', redundant: false },
+  { id: 'email', label: 'Email', redundant: false },
+  { id: 'print', label: 'Print pe hârtie', redundant: true },
+  { id: 'excel', label: 'Tabel Excel paralel', redundant: true },
+  { id: 'aprobare', label: 'Aprobare', redundant: false },
+  { id: 'reintro', label: 'Re-introducere date', redundant: true },
+  { id: 'arhiva', label: 'Arhivă digitală', redundant: false },
+  { id: 'raport', label: 'Raport lunar', redundant: false },
+];
+
+const totalRedundant = boxes.filter((b) => b.redundant).length;
 ---
 
 <Base title="Pagina nu a fost găsită — SET" description="404 — pagina căutată nu există." lang="ro">
   <main class="set-404">
-    <Monogram size="lg" color="black" />
-    <p class="set-eyebrow set-404__code">404</p>
-    <h1 class="set-display-md set-404__title">Pagina nu a fost găsită.</h1>
-    <p class="set-lead set-404__body">
-      Link-ul pe care ai venit nu mai există sau a fost mutat.
-    </p>
+    <div class="set-404__head">
+      <Monogram size="md" color="black" />
+      <p class="set-eyebrow set-404__code">404</p>
+      <h1 class="set-display-md set-404__title">Pagina nu a fost găsită.</h1>
+      <p class="set-lead set-404__body">
+        Dar ai dat peste un proces vechi. <strong>Care 3 pași sunt redundanți?</strong>
+      </p>
+    </div>
+
+    <section
+      class="set-game"
+      data-game
+      data-total={totalRedundant}
+      aria-label="Joc: identifică pașii redundanți"
+    >
+      <ol class="set-game__grid" role="list">
+        {
+          boxes.map((box) => (
+            <li class="set-game__cell">
+              <button
+                type="button"
+                class="set-game__box"
+                data-redundant={box.redundant ? 'true' : 'false'}
+                data-label={box.label}
+              >
+                <span class="set-game__label">{box.label}</span>
+              </button>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="set-game__status" aria-live="polite">
+        <span class="set-game__counter">
+          <span data-removed>0</span> / {totalRedundant}
+        </span>
+        <span class="set-game__counter-label">redundanțe eliminate</span>
+      </div>
+
+      <div class="set-game__hint" data-hint hidden>
+        <span class="set-game__hint-text">Acela e necesar.</span>
+      </div>
+
+      <div class="set-game__success" data-success hidden>
+        <p class="set-headline set-game__success-title">Bravo.</p>
+        <p class="set-body-lg set-game__success-body">
+          Asta facem zilnic la SET — cartografiem procesele, găsim redundanțele și le
+          eliminăm. Apoi ce rămâne traducem în aplicații clare.
+        </p>
+        <button type="button" class="set-game__replay" data-replay>
+          ↺ Joacă din nou
+        </button>
+      </div>
+    </section>
+
     <div class="set-404__actions">
-      <Button href="/" variant="default" size="lg">Înapoi la home →</Button>
+      <Button href="/" variant="default" size="lg">← Înapoi acasă</Button>
       <Button href="/#contact" variant="secondary" size="lg">Scrie-ne</Button>
     </div>
   </main>
@@ -25,19 +104,276 @@ import Button from '../components/Button.astro';
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     text-align: center;
-    padding: 64px 32px;
+    padding: 56px 32px 80px;
+    gap: 32px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .set-404__head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 16px;
   }
-  .set-404__code { color: var(--set-vermilion); opacity: 1; margin-top: 24px; }
+  .set-404__code { color: var(--set-vermilion); opacity: 1; margin: 16px 0 0; }
   .set-404__title { max-width: 800px; margin: 0; }
-  .set-404__body { max-width: 600px; margin: 0; opacity: 0.75; }
+  .set-404__body { max-width: 600px; margin: 0; opacity: 0.85; }
+  .set-404__body strong { color: var(--set-cobalt); }
   .set-404__actions {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
     justify-content: center;
-    margin-top: 24px;
+    margin-top: 16px;
+  }
+
+  /* ──────────────────────────────────────────────────────────
+     Game zone
+     ────────────────────────────────────────────────────────── */
+  .set-game {
+    width: 100%;
+    max-width: 760px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .set-game__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .set-game__box {
+    width: 100%;
+    min-height: 92px;
+    padding: 18px 12px;
+    background: var(--set-white);
+    color: var(--set-black);
+    border: 2px solid var(--set-black);
+    font-family: var(--set-font);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.25;
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.12s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .set-game__box:hover {
+    background: var(--set-bone);
+    transform: translateY(-1px);
+  }
+  .set-game__box:focus-visible {
+    outline: 2px dashed var(--set-cobalt);
+    outline-offset: 4px;
+  }
+
+  /* Cand utilizatorul nimereste un pas redundant → cutia se "evapora". */
+  .set-game__box.is-removed {
+    animation: box-evaporate 450ms ease forwards;
+    pointer-events: none;
+  }
+  @keyframes box-evaporate {
+    0%   { opacity: 1; transform: scale(1) rotate(0deg); }
+    50%  { opacity: 0.6; transform: scale(1.05) rotate(-1deg); background: var(--set-lime); }
+    100% { opacity: 0; transform: scale(0.7) rotate(2deg); }
+  }
+
+  /* Click gresit → cutia se clatina + flash vermilion subtil. */
+  .set-game__box.is-wrong {
+    animation: box-shake 400ms ease;
+    background: var(--set-vermilion);
+    color: var(--set-white);
+  }
+  @keyframes box-shake {
+    0%, 100% { transform: translateX(0); }
+    20%      { transform: translateX(-6px); }
+    40%      { transform: translateX(6px); }
+    60%      { transform: translateX(-4px); }
+    80%      { transform: translateX(4px); }
+  }
+
+  /* Status + counter */
+  .set-game__status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--set-font);
+  }
+  .set-game__counter {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .set-game__counter-label {
+    font-size: 12px;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    opacity: 0.55;
+  }
+
+  /* Hint care apare scurt sub grid cand utilizatorul greseste. */
+  .set-game__hint {
+    min-height: 24px;
+    color: var(--set-vermilion);
+    font-size: 14px;
+    letter-spacing: 0.4px;
+    font-weight: 500;
+    animation: hint-pop 240ms ease;
+  }
+  @keyframes hint-pop {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Success screen */
+  .set-game__success {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 32px 28px;
+    background: var(--set-yellow);
+    border: 2px solid var(--set-black);
+    width: 100%;
+    animation: success-in 600ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes success-in {
+    from { opacity: 0; transform: scale(0.92); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  .set-game__success-title {
+    margin: 0;
+    color: var(--set-black);
+  }
+  .set-game__success-body {
+    margin: 0;
+    max-width: 540px;
+    text-align: center;
+    line-height: 1.45;
+  }
+  .set-game__replay {
+    margin-top: 8px;
+    padding: 10px 18px;
+    background: transparent;
+    color: var(--set-black);
+    border: 2px solid var(--set-black);
+    font-family: var(--set-font);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s;
+  }
+  .set-game__replay:hover {
+    background: var(--set-black);
+    color: var(--set-yellow);
+  }
+
+  @media (max-width: 480px) {
+    .set-404 { padding: 40px 20px 64px; gap: 24px; }
+    .set-game__grid { grid-template-columns: repeat(2, 1fr); }
+    .set-game__box { min-height: 84px; font-size: 14px; padding: 14px 10px; }
+    .set-game__counter { font-size: 26px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .set-game__box.is-removed,
+    .set-game__box.is-wrong,
+    .set-game__hint,
+    .set-game__success {
+      animation: none !important;
+    }
+    .set-game__box.is-removed { opacity: 0; }
   }
 </style>
+
+<script>
+  // Game logic — vanilla JS, fara dependinte.
+  const games = document.querySelectorAll<HTMLElement>('[data-game]');
+
+  games.forEach((game) => {
+    const total = Number(game.dataset.total ?? 3);
+    const boxes = game.querySelectorAll<HTMLButtonElement>('.set-game__box');
+    const removedDisplay = game.querySelector<HTMLElement>('[data-removed]');
+    const hint = game.querySelector<HTMLElement>('[data-hint]');
+    const hintText = hint?.querySelector<HTMLElement>('.set-game__hint-text');
+    const success = game.querySelector<HTMLElement>('[data-success]');
+    const replayBtn = game.querySelector<HTMLButtonElement>('[data-replay]');
+
+    let removed = 0;
+    let hintTimeoutId: number | undefined;
+
+    // Amesteca ordinea cutiilor pe load (replay value).
+    const shuffleGrid = () => {
+      const grid = game.querySelector<HTMLElement>('.set-game__grid');
+      if (!grid) return;
+      const items = Array.from(grid.children);
+      items
+        .sort(() => Math.random() - 0.5)
+        .forEach((node) => grid.appendChild(node));
+    };
+
+    const showHint = (text: string) => {
+      if (!hint || !hintText) return;
+      hintText.textContent = text;
+      hint.hidden = false;
+      if (hintTimeoutId) window.clearTimeout(hintTimeoutId);
+      hintTimeoutId = window.setTimeout(() => {
+        if (hint) hint.hidden = true;
+      }, 1500);
+    };
+
+    const showSuccess = () => {
+      if (success) success.hidden = false;
+      success?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+
+    const reset = () => {
+      removed = 0;
+      if (removedDisplay) removedDisplay.textContent = '0';
+      if (success) success.hidden = true;
+      if (hint) hint.hidden = true;
+      boxes.forEach((box) => {
+        box.classList.remove('is-removed', 'is-wrong');
+        box.disabled = false;
+      });
+      shuffleGrid();
+    };
+
+    const onBoxClick = (e: Event) => {
+      const box = e.currentTarget as HTMLButtonElement;
+      if (box.classList.contains('is-removed')) return;
+      const isRedundant = box.dataset.redundant === 'true';
+
+      if (isRedundant) {
+        box.classList.add('is-removed');
+        removed++;
+        if (removedDisplay) removedDisplay.textContent = String(removed);
+        if (removed === total) {
+          window.setTimeout(showSuccess, 350);
+        }
+      } else {
+        box.classList.add('is-wrong');
+        const label = box.dataset.label ?? 'Acela';
+        showHint(`${label} e necesar. Mai gândește.`);
+        window.setTimeout(() => box.classList.remove('is-wrong'), 450);
+      }
+    };
+
+    boxes.forEach((box) => box.addEventListener('click', onBoxClick));
+    replayBtn?.addEventListener('click', reset);
+
+    // Amesteca la prima incarcare.
+    shuffleGrid();
+  });
+</script>
