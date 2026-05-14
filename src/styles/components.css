@@ -137,7 +137,16 @@
 .set-kpi--accent-danger  { border-top: 4px solid var(--set-vermilion); }
 .set-kpi--accent-success { border-top: 4px solid var(--set-lime); }
 .set-kpi__label { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; opacity: 0.55; }
-.set-kpi__value { font-size: 36px; font-weight: 600; letter-spacing: -0.6px; margin-top: 4px; }
+.set-kpi__value {
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: -0.6px;
+  margin-top: 4px;
+  /* Safety net: daca valoarea e mai lunga decat coloana, scrum la 2 linii in loc sa iasa. */
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
 .set-kpi__delta { font-size: 12px; font-weight: 600; margin-top: 4px; }
 .set-kpi__delta--success { color: var(--set-lime); }
 .set-kpi__delta--primary { color: var(--set-cobalt); }

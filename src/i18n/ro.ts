@@ -177,7 +177,7 @@ export const ro = {
         kpis: [
           { label: 'Surse', value: '3+' },
           { label: 'Scanare', value: 'zilnică' },
-          { label: 'Alerte', value: 'configurabile' },
+          { label: 'Alerte', value: 'custom' },
         ],
       },
     ],

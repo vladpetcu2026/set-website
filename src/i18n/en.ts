@@ -174,7 +174,7 @@ export const en: Messages = {
         kpis: [
           { label: 'Sources', value: '3+' },
           { label: 'Scan', value: 'daily' },
-          { label: 'Alerts', value: 'configurable' },
+          { label: 'Alerts', value: 'custom' },
         ],
       },
     ],
