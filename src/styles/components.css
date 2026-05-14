@@ -290,24 +290,15 @@ img, svg, video, canvas {
   }
 }
 
-/* ── Cazuri: pe mobile, KPI-urile stack vertical sub card body ── */
-@media (max-width: 900px) {
-  .set-case__kpis {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-  .set-case__kpis :global(.set-kpi__value) {
-    font-size: 24px;
-  }
+/* ── Cazuri: KPI font scale pe mobile (stacking-ul e in scoped CaseStudies.astro) ──
+   `:global()` n-are sens in CSS plain — selectorii pentru Kpi.astro merg direct. */
+@media (max-width: 700px) {
+  .set-kpi__value { font-size: 22px; word-break: break-word; }
+  .set-kpi__label { font-size: 10px; }
+  .set-kpi { padding: 14px; }
 }
-@media (max-width: 480px) {
-  .set-case__kpis {
-    grid-template-columns: 1fr;
-    border: 2px solid var(--set-black);
-  }
-  .set-case__kpis :global(.set-kpi + .set-kpi) {
-    border-left: none !important;
-    border-top: 2px solid var(--set-black);
-  }
+@media (max-width: 400px) {
+  .set-kpi__value { font-size: 18px; }
 }
 
 /* ── Long values (email-uri, URL-uri) — break-anywhere pe mobile ── */

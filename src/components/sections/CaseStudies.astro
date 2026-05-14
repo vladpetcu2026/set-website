@@ -94,6 +94,7 @@ const tagVariants: Array<'primary' | 'brand' | 'success'> = ['primary', 'brand',
     .set-case {
       grid-template-columns: 1fr;
       gap: 24px;
+      padding: 28px 24px;
     }
     .set-case__head,
     .set-case__title,
@@ -102,6 +103,20 @@ const tagVariants: Array<'primary' | 'brand' | 'success'> = ['primary', 'brand',
       grid-column: 1;
       grid-row: auto;
     }
-    .set-case__title { font-size: 28px; }
+    .set-case__title { font-size: 26px; }
+    /* KPI grid stack vertical: 3 coloane stramte erau prea inguste
+       pentru valori ca "zilnica" / "configurabile" (text se suprapunea
+       intre coloane). Pe mobile, fiecare KPI ocupa o linie intreaga. */
+    .set-case__kpis {
+      grid-template-columns: 1fr !important;
+    }
+    .set-case__kpis :global(.set-kpi + .set-kpi) {
+      border-left: none !important;
+      border-top: 2px solid var(--set-black);
+    }
+  }
+  @media (max-width: 480px) {
+    .set-case { padding: 24px 20px; }
+    .set-case__title { font-size: 22px; }
   }
 </style>
