@@ -141,6 +141,27 @@ export const ro = {
     ],
   },
 
+  demo: {
+    eyebrow: 'Demo live',
+    title: 'Cum arată simplificarea, în direct.',
+    body:
+      'Mai jos e o schiță a unui proces administrativ tipic — 8 pași, jumătate redundanți. Apasă butonul și vezi ce rămâne după ce trecem prin el.',
+    before: { label: 'proces vechi', count: '8', countLabel: 'pași' },
+    after: { label: 'după SET', count: '4', countLabel: 'pași' },
+    simplifyButton: '→ Simplifică',
+    resetButton: '↺ Resetează',
+    boxes: [
+      { id: 'cerere', label: 'Cerere' },
+      { id: 'email', label: 'Email' },
+      { id: 'print', label: 'Print pe hârtie' },
+      { id: 'excel', label: 'Tabel Excel paralel' },
+      { id: 'reintro', label: 'Re-introducere date' },
+      { id: 'aprobare', label: 'Aprobare' },
+      { id: 'arhiva', label: 'Arhivă digitală' },
+      { id: 'raport', label: 'Raport lunar' },
+    ],
+  },
+
   cases: {
     eyebrow: 'Cazuri',
     title: 'Trei sisteme livrate. Anonimizate.',

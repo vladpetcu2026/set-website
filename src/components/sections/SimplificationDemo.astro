@@ -1,0 +1,348 @@
+---
+/**
+ * Simplification Demo — secțiunea-semnătură a site-ului SET.
+ *
+ * Arată vizual ce face SET: un proces vechi cu 8 pași (jumătate redundanți)
+ * → la click pe „Simplifică", cei 4 redundanți se evaporă și cei 4 rămași
+ * se aliniază liniar cu 3 săgeți curate între ei.
+ *
+ * Date:
+ *   - Pozițiile inițiale (chaotice) și finale (liniare) sunt în procente
+ *     din container (aspect-ratio 5:2). Box width 18%, height 18%.
+ *   - Labelurile vin din i18n (RO + EN au aceleași 8 box-uri cu același id).
+ *   - Animație: 4 redundante fade-out (0–500ms), 4 rămase translate
+ *     spre poziții finale (200–1000ms), 3 săgeți fade-in (1000–1400ms).
+ *
+ * Pure CSS transitions + vanilla JS toggle. Respectă prefers-reduced-motion.
+ */
+import type { Messages } from '../../i18n/ro';
+
+interface Props {
+  t: Messages;
+}
+
+const { t } = Astro.props;
+
+// Layout: 8 box-uri cu poziții start (chaos) + end (liniar).
+// Redundanții (email, print, excel, reintro) NU au end, doar dispar.
+interface BoxLayout {
+  id: string;
+  redundant: boolean;
+  startTop: number; // % din container
+  startLeft: number;
+  endTop?: number;
+  endLeft?: number;
+}
+
+const layout: BoxLayout[] = [
+  { id: 'cerere',   redundant: false, startTop: 14, startLeft:  4, endTop: 41, endLeft:  4 },
+  { id: 'email',    redundant: true,  startTop: 38, startLeft: 24 },
+  { id: 'print',    redundant: true,  startTop:  6, startLeft: 46 },
+  { id: 'excel',    redundant: true,  startTop: 30, startLeft: 68 },
+  { id: 'reintro',  redundant: true,  startTop: 64, startLeft: 12 },
+  { id: 'aprobare', redundant: false, startTop: 72, startLeft: 32, endTop: 41, endLeft: 28 },
+  { id: 'arhiva',   redundant: false, startTop: 62, startLeft: 54, endTop: 41, endLeft: 52 },
+  { id: 'raport',   redundant: false, startTop: 76, startLeft: 76, endTop: 41, endLeft: 76 },
+];
+
+// Asociem labelurile din i18n după id.
+const boxes = layout.map((l) => {
+  const i18nBox = t.demo.boxes.find((b) => b.id === l.id);
+  return { ...l, label: i18nBox?.label ?? l.id };
+});
+
+// Săgețile finale: 3 între cei 4 box-uri din rândul curat.
+// Poziții X în % (centrul fiecărei săgeți, dintre box-uri adiacente).
+// Box width 18% → marginea dreapta = endLeft + 18, săgeata începe acolo.
+const arrows = [
+  { x1: 22, x2: 28, y: 50 }, // Cerere → Aprobare
+  { x1: 46, x2: 52, y: 50 }, // Aprobare → Arhivă
+  { x1: 70, x2: 76, y: 50 }, // Arhivă → Raport
+];
+---
+
+<section id="demo-simplificare" class="set-section set-section--bone set-demo">
+  <div class="set-section__inner">
+    <p class="set-eyebrow">{t.demo.eyebrow}</p>
+    <h2 class="set-display-md set-demo__title">{t.demo.title}</h2>
+    <p class="set-body-lg set-demo__body">{t.demo.body}</p>
+
+    <div class="set-demo__wrap">
+      <div class="set-demo__stage" data-demo>
+        {
+          boxes.map((box) => (
+            <div
+              class:list={['set-demo__box', box.redundant && 'is-redundant']}
+              style={`
+                --start-top: ${box.startTop}%;
+                --start-left: ${box.startLeft}%;
+                --end-top: ${box.endTop ?? box.startTop}%;
+                --end-left: ${box.endLeft ?? box.startLeft}%;
+              `}
+              data-id={box.id}
+            >
+              <span class="set-demo__box-label">{box.label}</span>
+            </div>
+          ))
+        }
+
+        <svg
+          class="set-demo__arrows"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <defs>
+            <marker
+              id="demo-arrow-head"
+              viewBox="0 0 10 10"
+              refX="9"
+              refY="5"
+              markerWidth="5"
+              markerHeight="5"
+              orient="auto-start-reverse"
+            >
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" />
+            </marker>
+          </defs>
+          {
+            arrows.map((a) => (
+              <line
+                class="set-demo__arrow"
+                x1={a.x1}
+                y1={a.y}
+                x2={a.x2}
+                y2={a.y}
+                stroke="currentColor"
+                stroke-width="0.6"
+                marker-end="url(#demo-arrow-head)"
+              />
+            ))
+          }
+        </svg>
+      </div>
+
+      <div class="set-demo__status">
+        <div class="set-demo__status-state set-demo__status-state--before">
+          <span class="set-demo__count">{t.demo.before.count}</span>
+          <span class="set-demo__count-label">{t.demo.before.countLabel}</span>
+          <span class="set-demo__state-label">{t.demo.before.label}</span>
+        </div>
+        <div class="set-demo__status-arrow" aria-hidden="true">→</div>
+        <div class="set-demo__status-state set-demo__status-state--after">
+          <span class="set-demo__count">{t.demo.after.count}</span>
+          <span class="set-demo__count-label">{t.demo.after.countLabel}</span>
+          <span class="set-demo__state-label">{t.demo.after.label}</span>
+        </div>
+      </div>
+
+      <div class="set-demo__actions">
+        <button type="button" class="set-btn set-btn--brand set-btn--lg" data-simplify>
+          {t.demo.simplifyButton}
+        </button>
+        <button type="button" class="set-btn set-btn--secondary set-btn--lg" data-reset>
+          {t.demo.resetButton}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .set-demo__title { margin: 8px 0 16px; max-width: 900px; }
+  .set-demo__body { margin: 0 0 48px; opacity: 0.8; max-width: 760px; }
+
+  .set-demo__wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  /* Stage = panoul vizual cu box-urile și săgețile.
+     aspect-ratio fix ca să facă boxes/arrows scalabile uniform. */
+  .set-demo__stage {
+    position: relative;
+    width: 100%;
+    max-width: 860px;
+    aspect-ratio: 5 / 2;
+    background: var(--set-white);
+    border: 2px solid var(--set-black);
+    overflow: hidden;
+  }
+
+  .set-demo__box {
+    position: absolute;
+    top: var(--start-top);
+    left: var(--start-left);
+    width: 18%;
+    min-height: 17%;
+    padding: 6px 8px;
+    background: var(--set-white);
+    color: var(--set-black);
+    border: 2px solid var(--set-black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: var(--set-font);
+    font-size: clamp(10px, 1.6cqw, 14px);
+    font-weight: 500;
+    line-height: 1.15;
+    transition:
+      top 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      left 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      opacity 0.5s ease,
+      transform 0.5s ease,
+      background 0.3s ease;
+  }
+  .set-demo__box-label {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* SIMPLIFIED state */
+  .set-demo__stage.is-simplified .set-demo__box {
+    top: var(--end-top);
+    left: var(--end-left);
+    transition-delay: 0.25s; /* lasa redundantii sa fade-out intai */
+  }
+  .set-demo__stage.is-simplified .set-demo__box.is-redundant {
+    opacity: 0;
+    transform: scale(0.6) rotate(-3deg);
+    background: var(--set-vermilion);
+    transition-delay: 0s; /* dispar imediat */
+    pointer-events: none;
+  }
+  .set-demo__stage.is-simplified .set-demo__box:not(.is-redundant) {
+    background: var(--set-lime);
+  }
+
+  /* Săgețile finale — invizibile initial, fade-in dupa ce box-urile au ajuns. */
+  .set-demo__arrows {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    color: var(--set-cobalt);
+    pointer-events: none;
+  }
+  .set-demo__arrow {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .set-demo__stage.is-simplified .set-demo__arrow {
+    opacity: 1;
+    transition-delay: 1.05s;
+  }
+
+  /* Status row (counters before → after) */
+  .set-demo__status {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-family: var(--set-font);
+    margin-top: 8px;
+  }
+  .set-demo__status-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    transition: opacity 0.4s ease;
+  }
+  .set-demo__count {
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .set-demo__count-label {
+    font-size: 11px;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    opacity: 0.55;
+  }
+  .set-demo__state-label {
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 4px;
+    opacity: 0.7;
+  }
+  .set-demo__status-state--before .set-demo__count { color: var(--set-vermilion); }
+  .set-demo__status-state--after .set-demo__count { color: var(--set-lime); }
+  .set-demo__status-arrow {
+    font-size: 28px;
+    opacity: 0.5;
+  }
+  /* Faza inițială: highlight pe 'before', dim pe 'after'. */
+  .set-demo__status-state--after { opacity: 0.4; }
+  .set-demo:has(.is-simplified) .set-demo__status-state--before { opacity: 0.4; }
+  .set-demo:has(.is-simplified) .set-demo__status-state--after { opacity: 1; }
+
+  .set-demo__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 16px;
+  }
+  /* Butonul „Reset" e ascuns inițial; apare în starea simplificată. */
+  .set-demo__actions [data-reset] {
+    display: none;
+  }
+  .set-demo:has(.is-simplified) .set-demo__actions [data-simplify] {
+    display: none;
+  }
+  .set-demo:has(.is-simplified) .set-demo__actions [data-reset] {
+    display: inline-flex;
+  }
+
+  @media (max-width: 600px) {
+    .set-demo__stage {
+      aspect-ratio: 4 / 3;
+    }
+    .set-demo__box {
+      width: 30%;
+      min-height: 15%;
+      font-size: 11px;
+    }
+    /* Pe mobile, recompune poziții ca să nu fie aglomerat */
+    .set-demo__box { /* override-uri prin position values din JSX raman, dar font scade */ }
+    .set-demo__status { gap: 16px; }
+    .set-demo__count { font-size: 32px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .set-demo__box,
+    .set-demo__arrow,
+    .set-demo__status-state {
+      transition: none !important;
+    }
+    .set-demo__stage.is-simplified .set-demo__box.is-redundant {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  // Toggle simplification state. Pure JS, fara dependinte.
+  const demos = document.querySelectorAll<HTMLElement>('.set-demo');
+  demos.forEach((demo) => {
+    const stage = demo.querySelector<HTMLElement>('[data-demo]');
+    const simplifyBtn = demo.querySelector<HTMLButtonElement>('[data-simplify]');
+    const resetBtn = demo.querySelector<HTMLButtonElement>('[data-reset]');
+
+    if (!stage) return;
+
+    simplifyBtn?.addEventListener('click', () => {
+      stage.classList.add('is-simplified');
+    });
+    resetBtn?.addEventListener('click', () => {
+      stage.classList.remove('is-simplified');
+    });
+  });
+</script>

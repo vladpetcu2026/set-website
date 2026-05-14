@@ -138,6 +138,27 @@ export const en: Messages = {
     ],
   },
 
+  demo: {
+    eyebrow: 'Live demo',
+    title: 'Watch simplification, live.',
+    body:
+      'Below is a sketch of a typical administrative process — 8 steps, half of them redundant. Hit the button and see what stays after we walk through it.',
+    before: { label: 'old process', count: '8', countLabel: 'steps' },
+    after: { label: 'after SET', count: '4', countLabel: 'steps' },
+    simplifyButton: '→ Simplify',
+    resetButton: '↺ Reset',
+    boxes: [
+      { id: 'cerere', label: 'Request' },
+      { id: 'email', label: 'Email' },
+      { id: 'print', label: 'Paper printout' },
+      { id: 'excel', label: 'Parallel Excel sheet' },
+      { id: 'reintro', label: 'Manual re-entry' },
+      { id: 'aprobare', label: 'Approval' },
+      { id: 'arhiva', label: 'Digital archive' },
+      { id: 'raport', label: 'Monthly report' },
+    ],
+  },
+
   cases: {
     eyebrow: 'Cases',
     title: 'Three systems shipped. Anonymized.',
