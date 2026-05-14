@@ -12,7 +12,13 @@ const { t } = Astro.props;
 
 <section id="hero" class="set-hero">
   <div class="set-hero__inner">
-    <div class="set-hero__monogram">
+    <div
+      class="set-hero__monogram"
+      data-monogram-trigger
+      role="button"
+      tabindex="0"
+      aria-label="SET — Sustainable EdTech Romania"
+    >
       <Monogram size="xl" color="black" />
     </div>
 
@@ -46,6 +52,20 @@ const { t } = Astro.props;
   .set-hero__monogram {
     margin-bottom: 16px;
     line-height: 0.85;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .set-hero__monogram:focus-visible {
+    outline: 2px dashed var(--set-black);
+    outline-offset: 12px;
+  }
+  /* Mic hover hint (doar desktop, fara mouse-emul pe mobile) */
+  @media (hover: hover) {
+    .set-hero__monogram:hover :global(.set-monogram > span:nth-child(2)) {
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
   }
   .set-hero__title {
     max-width: 900px;
@@ -79,4 +99,70 @@ const { t } = Astro.props;
     .set-hero__actions { flex-direction: column; align-items: stretch; width: 100%; max-width: 320px; }
     .set-hero__actions :global(.set-btn) { justify-content: center; }
   }
+
+  /* ──────────────────────────────────────────────────────────
+     Easter egg: tap pe monograma SET → val secvential pe cele 3 litere.
+     S sare, apoi E (cu spotlight la full opacity), apoi T.
+     One-shot per tap, cu cooldown ~1s.
+     ────────────────────────────────────────────────────────── */
+  .set-hero__monogram.is-flashing :global(.set-monogram) {
+    animation: hero-pulse 800ms ease-in-out;
+  }
+  .set-hero__monogram.is-flashing :global(.set-monogram > span:nth-child(1)) {
+    animation: hero-wave 600ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .set-hero__monogram.is-flashing :global(.set-monogram > span:nth-child(2)) {
+    animation: hero-wave-e 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 150ms;
+  }
+  .set-hero__monogram.is-flashing :global(.set-monogram > span:nth-child(3)) {
+    animation: hero-wave 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 300ms;
+  }
+
+  @keyframes hero-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.025); }
+  }
+  @keyframes hero-wave {
+    0%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-12px); }
+  }
+  @keyframes hero-wave-e {
+    /* E sare mai sus si capata full opacity in varful sariturii — "spotlight" pe litera estompata */
+    0%, 100% { transform: translateY(0); opacity: 0.5; }
+    40% { transform: translateY(-20px); opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .set-hero__monogram { cursor: default; }
+    .set-hero__monogram.is-flashing :global(.set-monogram),
+    .set-hero__monogram.is-flashing :global(.set-monogram > span) {
+      animation: none !important;
+    }
+  }
 </style>
+
+<script>
+  // Easter egg: tap pe monograma SET → animatie wave + spotlight pe E.
+  const triggers = document.querySelectorAll<HTMLElement>('[data-monogram-trigger]');
+  triggers.forEach((trigger) => {
+    let isPlaying = false;
+
+    const play = () => {
+      if (isPlaying) return;
+      isPlaying = true;
+      trigger.classList.add('is-flashing');
+      window.setTimeout(() => {
+        trigger.classList.remove('is-flashing');
+        isPlaying = false;
+      }, 1000);
+    };
+
+    trigger.addEventListener('click', play);
+    trigger.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        play();
+      }
+    });
+  });
+</script>

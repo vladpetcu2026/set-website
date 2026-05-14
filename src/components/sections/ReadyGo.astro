@@ -17,7 +17,7 @@ const { t } = Astro.props;
 const phases = t.readyGo.phases;
 ---
 
-<section id="ready-set-go" class="set-section">
+<section id="ready-set-go" class="set-section set-readygo" data-readygo>
   <div class="set-section__inner">
     <p class="set-eyebrow">{t.readyGo.eyebrow}</p>
 
@@ -141,4 +141,100 @@ const phases = t.readyGo.phases;
     .set-readygo__phase { font-size: 26px; }
     .set-readygo__phase--1 { padding: 0 8px 3px; }
   }
+
+  /* ──────────────────────────────────────────────────────────
+     Scroll-triggered animation: Ready? → Set. → Go!
+     Trigger: cand sectiunea intra in viewport (IntersectionObserver
+     adauga clasa `.is-revealed` la <section>).
+     One-shot: ruleaza o singura data dupa care ramane in starea finala.
+     ────────────────────────────────────────────────────────── */
+
+  /* Starile initiale (inainte de reveal) — invizibile, off-position. */
+  .set-readygo__word--ready,
+  .set-readygo__word--set,
+  .set-readygo__word--go {
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+  .set-readygo__word--ready { transform: translateX(-24px); }
+  .set-readygo__word--set { transform: scale(0.6); transform-origin: center; }
+  .set-readygo__word--go { transform: translateY(-32px); }
+
+  .set-readygo__col {
+    opacity: 0;
+    transform: translateY(16px);
+    will-change: transform, opacity;
+  }
+
+  /* Reveal: animatiile pornesc dupa ce IntersectionObserver
+     adauga .is-revealed la <section>. */
+  .set-readygo.is-revealed .set-readygo__word--ready {
+    animation: rg-ready 550ms cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+  }
+  .set-readygo.is-revealed .set-readygo__word--set {
+    animation: rg-set 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 280ms forwards;
+  }
+  .set-readygo.is-revealed .set-readygo__word--go {
+    animation: rg-go 650ms cubic-bezier(0.34, 1.56, 0.64, 1) 560ms forwards;
+  }
+  .set-readygo.is-revealed .set-readygo__col--0 {
+    animation: rg-col 500ms ease-out 900ms forwards;
+  }
+  .set-readygo.is-revealed .set-readygo__col--1 {
+    animation: rg-col 500ms ease-out 1050ms forwards;
+  }
+  .set-readygo.is-revealed .set-readygo__col--2 {
+    animation: rg-col 500ms ease-out 1200ms forwards;
+  }
+
+  @keyframes rg-ready {
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes rg-set {
+    0%   { opacity: 0; transform: scale(0.6); }
+    60%  { opacity: 1; transform: scale(1.08); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes rg-go {
+    0%   { opacity: 0; transform: translateY(-32px); }
+    65%  { opacity: 1; transform: translateY(6px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes rg-col {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Respect user preference: reduce motion -> totul vizibil instant, fara animatii. */
+  @media (prefers-reduced-motion: reduce) {
+    .set-readygo__word--ready,
+    .set-readygo__word--set,
+    .set-readygo__word--go,
+    .set-readygo__col {
+      opacity: 1 !important;
+      transform: none !important;
+      animation: none !important;
+    }
+  }
 </style>
+
+<script>
+  // Scroll-triggered reveal. One-shot per sectiune.
+  const sections = document.querySelectorAll<HTMLElement>('[data-readygo]');
+  if (sections.length && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.25, rootMargin: '0px 0px -10% 0px' }
+    );
+    sections.forEach((s) => observer.observe(s));
+  } else {
+    // Fallback: pe browsere fara IO (rar), arata totul direct.
+    sections.forEach((s) => s.classList.add('is-revealed'));
+  }
+</script>
