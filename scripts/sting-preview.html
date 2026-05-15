@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8" />
+<title>SET — Hero sting preview (12s)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* ── tokens ─────────────────────────────────────────── */
+  :root {
+    --black:   #0b0b0b;
+    --white:   #ffffff;
+    --yellow:  #f0db4f;
+    --cobalt:  #1d4ed8;
+    --lime:    #84cc16;
+    --mono: "Spline Sans Mono", ui-monospace, monospace;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    background: var(--black);
+    font-family: var(--mono);
+    color: var(--white);
+  }
+
+  /* Stage: 1080×1080 patrat. Daca vrei 16:9 (1920×1080), schimba la 1920×1080.
+     Vlad: in browser, framezi cu Cmd+Shift+5 'Record Selected Portion'
+           strict dreptunghiul colorat. */
+  .stage {
+    position: relative;
+    width: 1080px;
+    height: 1080px;
+    max-width: 100vw;
+    max-height: 100vh;
+    margin: 0 auto;
+    background: var(--black);
+    overflow: hidden;
+    animation: bg-flip 12s ease-in forwards;
+  }
+
+  @keyframes bg-flip {
+    0%, 58% { background: var(--black); }
+    62%, 100% { background: var(--yellow); }
+  }
+
+  /* Cuvant generic — pozitionat absolut */
+  .word {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    opacity: 0;
+    white-space: nowrap;
+  }
+
+  /* ── Ready? — 0-2s ─────────────────────────────────── */
+  .word--ready {
+    font-size: 160px;
+    color: var(--cobalt);
+    animation: ready 12s forwards;
+  }
+  @keyframes ready {
+    0%   { opacity: 0; transform: translate(calc(-50% - 80px), -50%); }
+    4%   { opacity: 1; transform: translate(-50%, -50%); }
+    16%  { opacity: 1; transform: translate(-50%, -50%); }
+    20%  { opacity: 0; transform: translate(-50%, -50%); }
+    100% { opacity: 0; }
+  }
+
+  /* ── Set. — 2.5-4.5s, badge galben pe negru ───────── */
+  .word--set {
+    font-size: 160px;
+    padding: 0 36px 12px;
+    background: var(--yellow);
+    color: var(--black);
+    animation: setword 12s forwards;
+  }
+  @keyframes setword {
+    0%, 18% { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+    22%     { opacity: 1; transform: translate(-50%, -50%) scale(1.12); }
+    25%, 33%{ opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    37%     { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+    100%    { opacity: 0; }
+  }
+
+  /* ── Go! — 5-7s, drop from top, lime ───────────────── */
+  .word--go {
+    font-size: 200px;
+    color: var(--lime);
+    animation: go 12s forwards;
+  }
+  @keyframes go {
+    0%, 36%  { opacity: 0; transform: translate(-50%, calc(-50% - 200px)); }
+    42%      { opacity: 1; transform: translate(-50%, calc(-50% + 20px)); }
+    46%, 52% { opacity: 1; transform: translate(-50%, -50%); }
+    56%      { opacity: 0; transform: translate(-50%, -50%); }
+    100%     { opacity: 0; }
+  }
+
+  /* ── Monograma — 7-12s, apare cu bg flip la galben ── */
+  .monogram {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 540px;
+    line-height: 0.85;
+    letter-spacing: -0.06em;
+    color: var(--black);
+    opacity: 0;
+    display: inline-flex;
+    animation: mono 12s forwards;
+  }
+  .monogram > span:nth-child(2) { opacity: 0.5; }
+
+  @keyframes mono {
+    0%, 56% { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
+    62%     { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+    66%     { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    100%    { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  }
+
+  /* ── Tagline si URL apar dupa monograma ────────────── */
+  .tagline,
+  .url {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--black);
+    font-family: var(--mono);
+    font-weight: 500;
+    text-align: center;
+    opacity: 0;
+    white-space: nowrap;
+  }
+  .tagline {
+    top: calc(50% + 280px);
+    font-size: 36px;
+    letter-spacing: 0.4px;
+    animation: tagline 12s forwards;
+  }
+  .url {
+    top: calc(50% + 340px);
+    font-size: 22px;
+    letter-spacing: 2.4px;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: url 12s forwards;
+  }
+  @keyframes tagline {
+    0%, 72% { opacity: 0; transform: translate(-50%, 8px); }
+    78%, 100% { opacity: 1; transform: translate(-50%, 0); }
+  }
+  @keyframes url {
+    0%, 80% { opacity: 0; }
+    86%, 100% { opacity: 0.65; }
+  }
+
+  /* ── Help bar (vizibil DOAR pe ecran, nu in inregistrare).
+        Apare la marginea de jos cu instructiuni pentru Vlad.
+        La inceput recording-ul, da F11 sau cropuieste cu Cmd+Shift+5 ── */
+  .help {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1a1a1a;
+    color: #fff;
+    padding: 10px 18px;
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.4px;
+    border: 1.5px solid #333;
+    z-index: 100;
+    text-align: center;
+  }
+  .help a { color: var(--yellow); text-decoration: underline; }
+  .help kbd {
+    background: #333; padding: 2px 6px; border-radius: 2px;
+    font-family: inherit; font-size: 12px;
+  }
+
+  /* Pe ecran de 1080p sau mai mic, scalam stage-ul ca sa intre. */
+  @media (max-width: 1100px), (max-height: 1100px) {
+    .stage {
+      transform: scale(0.85);
+      transform-origin: center center;
+    }
+  }
+  @media (max-width: 900px) {
+    .stage { transform: scale(0.6); }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+  <span class="word word--ready">Ready?</span>
+  <span class="word word--set">Set.</span>
+  <span class="word word--go">Go!</span>
+  <span class="monogram"><span>S</span><span>E</span><span>T</span></span>
+  <span class="tagline">Sustainable EdTech Romania</span>
+  <span class="url">sustainabletech.ro</span>
+</div>
+
+<div class="help">
+  Animatia ruleaza 12 sec. <kbd>Cmd</kbd>+<kbd>R</kbd> sa rulezi din nou. Cropuieste cu <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>5</kbd> doar dreptunghiul colorat.
+</div>
+
+</body>
+</html>

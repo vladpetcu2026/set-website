@@ -15,29 +15,22 @@ const { t } = Astro.props;
     <div
       class="set-hero__monogram"
       data-monogram-trigger
+      data-hero-sting
       role="button"
       tabindex="0"
       aria-label="SET — Sustainable EdTech Romania"
     >
       {/*
-        Sting video — joaca o data muted la load, se opreste pe ultimul frame
-        (care e identic cu monograma statica de mai jos → continuitate vizuala).
-        Daca fisierul lipseste, <video> se auto-ascunde si static monogram ramane.
-        Vezi public/media/README.md pentru spec.
+        Sting CSS — joaca o singura data per sesiune (sessionStorage).
+        Trei cuvinte (Ready? / Set. / Go!) apar secvential peste monograma
+        statica, apoi monograma fade-in la final.
+        Fara dependinte: pure CSS keyframes + 10 linii de JS pentru gating.
       */}
-      <video
-        class="set-hero__video"
-        poster="/media/hero-sting-poster.jpg"
-        autoplay
-        muted
-        playsinline
-        preload="metadata"
-        aria-hidden="true"
-        data-hero-video
-      >
-        <source src="/media/hero-sting.webm" type="video/webm" />
-        <source src="/media/hero-sting.mp4" type="video/mp4" />
-      </video>
+      <div class="set-hero__sting" aria-hidden="true">
+        <span class="set-hero__sting-word set-hero__sting-word--ready">Ready?</span>
+        <span class="set-hero__sting-word set-hero__sting-word--set">Set.</span>
+        <span class="set-hero__sting-word set-hero__sting-word--go">Go!</span>
+      </div>
       <Monogram size="xl" color="black" />
     </div>
 
@@ -75,31 +68,6 @@ const { t } = Astro.props;
     cursor: pointer;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
-  }
-
-  /* Sting video — overlay peste monograma statica.
-     Initial display: none (se aprinde via JS doar daca incarca cu succes). */
-  .set-hero__video {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: none;
-    pointer-events: none;
-  }
-  .set-hero__monogram.has-video .set-hero__video {
-    display: block;
-  }
-  /* Cand video e activ, monograma statica devine doar placeholder de spatiu
-     (ramane in markup pentru a11y dar e invizibila) */
-  .set-hero__monogram.has-video :global(.set-monogram) {
-    visibility: hidden;
-  }
-  /* Daca user-ul prefera reduced motion, video-ul NU se afiseaza chiar daca a incarcat. */
-  @media (prefers-reduced-motion: reduce) {
-    .set-hero__video { display: none !important; }
-    .set-hero__monogram.has-video :global(.set-monogram) { visibility: visible !important; }
   }
   .set-hero__monogram:focus-visible {
     outline: 2px dashed var(--set-black);
@@ -184,17 +152,180 @@ const { t } = Astro.props;
       animation: none !important;
     }
   }
+
+  /* ──────────────────────────────────────────────────────────
+     STING CSS (10 sec total) — Ready? Set. Go!
+     Joaca o singura data per sesiune (controlat de JS via sessionStorage).
+     Default state: ascuns. Cand parintele .set-hero__monogram primeste
+     clasa .is-playing-sting, animatia porneste.
+
+     Timeline:
+       0.0–2.0s   Ready?   cobalt, slide-in din stanga
+       2.0–4.0s   Set.     vermilion, scale-pop cu overshoot
+       4.0–6.5s   Go!      negru bold, drop din sus cu bounce
+       6.5–10.0s monograma fade-in (statica devine vizibila)
+     ────────────────────────────────────────────────────────── */
+  .set-hero__sting {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .set-hero__sting-word {
+    position: absolute;
+    font-family: var(--set-font);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    white-space: nowrap;
+    opacity: 0;
+  }
+  .set-hero__sting-word--ready {
+    font-size: 200px;
+    color: var(--set-cobalt);
+  }
+  .set-hero__sting-word--set {
+    font-size: 220px;
+    color: var(--set-vermilion);
+  }
+  .set-hero__sting-word--go {
+    font-size: 260px;
+    color: var(--set-black);
+  }
+
+  /* Cand sting-ul joaca, monograma statica e ascunsa pana la fade-in din keyframe */
+  .set-hero__monogram.is-playing-sting :global(.set-monogram) {
+    opacity: 0;
+    animation: sting-mono 10s ease forwards;
+  }
+  .set-hero__monogram.is-playing-sting .set-hero__sting-word--ready {
+    animation: sting-ready 10s ease forwards;
+  }
+  .set-hero__monogram.is-playing-sting .set-hero__sting-word--set {
+    animation: sting-set 10s ease forwards;
+  }
+  .set-hero__monogram.is-playing-sting .set-hero__sting-word--go {
+    animation: sting-go 10s ease forwards;
+  }
+
+  @keyframes sting-ready {
+    /* 0-2 sec din 10 = 0%-20% timeline */
+    0%   { opacity: 0; transform: translateX(-100px); }
+    6%   { opacity: 1; transform: translateX(0); }
+    16%  { opacity: 1; transform: translateX(0); }
+    20%  { opacity: 0; transform: translateX(0); }
+    100% { opacity: 0; }
+  }
+  @keyframes sting-set {
+    /* 2-4 sec din 10 = 20%-40% */
+    0%, 18%  { opacity: 0; transform: scale(0.4); }
+    24%      { opacity: 1; transform: scale(1.15); }
+    28%, 36% { opacity: 1; transform: scale(1); }
+    40%      { opacity: 0; transform: scale(1); }
+    100%     { opacity: 0; }
+  }
+  @keyframes sting-go {
+    /* 4-6.5 sec din 10 = 40%-65% */
+    0%, 38%  { opacity: 0; transform: translateY(-80px); }
+    46%      { opacity: 1; transform: translateY(10px); }
+    52%, 60% { opacity: 1; transform: translateY(0); }
+    65%      { opacity: 0; transform: translateY(0); }
+    100%     { opacity: 0; }
+  }
+  @keyframes sting-mono {
+    /* Monograma fade-in 6.5-10 sec din 10 = 65%-100% */
+    0%, 60% { opacity: 0; }
+    72%, 100% { opacity: 1; }
+  }
+
+  /* Pe mobile, reducem dimensiunile cuvintelor sa nu iasa din ecran */
+  @media (max-width: 768px) {
+    .set-hero__sting-word--ready { font-size: 88px; }
+    .set-hero__sting-word--set { font-size: 96px; }
+    .set-hero__sting-word--go { font-size: 116px; }
+  }
+  @media (max-width: 480px) {
+    .set-hero__sting-word--ready { font-size: 64px; }
+    .set-hero__sting-word--set { font-size: 72px; }
+    .set-hero__sting-word--go { font-size: 88px; }
+  }
+
+  /* Reduced motion: sting-ul nu se joaca, monograma statica e vizibila imediat */
+  @media (prefers-reduced-motion: reduce) {
+    .set-hero__sting { display: none !important; }
+    .set-hero__monogram.is-playing-sting :global(.set-monogram) {
+      opacity: 1 !important;
+      animation: none !important;
+    }
+  }
 </style>
 
 <script>
   // ─────────────────────────────────────────────
-  // 1. Easter egg: tap pe monograma SET → wave + spotlight pe E.
+  // 1. Sting on first visit per session.
+  //    Joaca o data, apoi sessionStorage marks it ca redat.
+  //    User-ul poate skip click oriunde pe ecran.
+  // ─────────────────────────────────────────────
+  const stingTargets = document.querySelectorAll<HTMLElement>('[data-hero-sting]');
+  stingTargets.forEach((target) => {
+    const STORAGE_KEY = 'set-sting-played';
+    const STING_DURATION_MS = 10000;
+
+    const alreadyPlayed = (() => {
+      try {
+        return sessionStorage.getItem(STORAGE_KEY) === '1';
+      } catch {
+        return false;
+      }
+    })();
+
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+
+    if (alreadyPlayed || prefersReducedMotion) {
+      // Skip: nu pornim sting-ul, monograma statica e vizibila by default.
+      return;
+    }
+
+    // Joaca sting-ul.
+    target.classList.add('is-playing-sting');
+
+    const finish = () => {
+      target.classList.remove('is-playing-sting');
+      try {
+        sessionStorage.setItem(STORAGE_KEY, '1');
+      } catch {
+        /* sessionStorage indisponibil → ignoram */
+      }
+    };
+
+    const stingTimeoutId = window.setTimeout(finish, STING_DURATION_MS);
+
+    // Skip on click (oricine vrea sa scape direct la continut).
+    // Doar pentru sting; NU declanseaza easter egg-ul de tap (acela are propriul guard).
+    const skipOnClick = (e: Event) => {
+      if (!target.classList.contains('is-playing-sting')) return;
+      window.clearTimeout(stingTimeoutId);
+      finish();
+      e.preventDefault();
+      e.stopPropagation();
+    };
+    target.addEventListener('click', skipOnClick, { capture: true, once: true });
+  });
+
+  // ─────────────────────────────────────────────
+  // 2. Easter egg: tap pe monograma SET → wave + spotlight pe E.
   // ─────────────────────────────────────────────
   const triggers = document.querySelectorAll<HTMLElement>('[data-monogram-trigger]');
   triggers.forEach((trigger) => {
     let isPlaying = false;
 
     const play = () => {
+      // Daca sting-ul inca joaca, nu activam easter egg-ul (click-ul a skip-uit oricum sting-ul).
+      if (trigger.classList.contains('is-playing-sting')) return;
       if (isPlaying) return;
       isPlaying = true;
       trigger.classList.add('is-flashing');
@@ -211,39 +342,5 @@ const { t } = Astro.props;
         play();
       }
     });
-  });
-
-  // ─────────────────────────────────────────────
-  // 2. Hero sting video: activeaza overlay-ul doar daca incarcarea reuseste.
-  //    Daca fisierul /media/hero-sting.mp4 lipseste, <video> da error si
-  //    ramane ascuns — monograma statica continua sa fie vizibila.
-  // ─────────────────────────────────────────────
-  const videos = document.querySelectorAll<HTMLVideoElement>('[data-hero-video]');
-  videos.forEach((video) => {
-    const parent = video.closest<HTMLElement>('.set-hero__monogram');
-    if (!parent) return;
-
-    // Verifica prefers-reduced-motion: daca user-ul prefera reducere, nu activam video.
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) {
-      // Suspendam complet video-ul (nu downloadam, nu activam).
-      video.remove();
-      return;
-    }
-
-    const enable = () => parent.classList.add('has-video');
-    const disable = () => parent.classList.remove('has-video');
-
-    // Daca a inceput sa joace, marcheaza overlay-ul activ.
-    video.addEventListener('playing', enable, { once: true });
-    // Pe loadeddata (primul frame disponibil), aprinde overlay-ul preventiv.
-    video.addEventListener('loadeddata', enable, { once: true });
-    // Daca incarcarea esueaza (fisier lipsa / 404 / format), ascundem.
-    video.addEventListener('error', disable);
-    // La fel pentru source-uri individuale.
-    video.querySelectorAll('source').forEach((s) => s.addEventListener('error', () => {
-      // Doar daca TOATE source-urile esueaza, ascundem; browser-ul incearca alternativ.
-      if (video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) disable();
-    }));
   });
 </script>

@@ -25,3 +25,6 @@ pnpm-debug.log*
 # os
 .DS_Store
 Thumbs.db
+
+# scripts/ is for dev tools (sting preview, recording instructions etc)
+# Keep tracked but not deployed.
