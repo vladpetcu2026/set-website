@@ -19,6 +19,25 @@ const { t } = Astro.props;
       tabindex="0"
       aria-label="SET — Sustainable EdTech Romania"
     >
+      {/*
+        Sting video — joaca o data muted la load, se opreste pe ultimul frame
+        (care e identic cu monograma statica de mai jos → continuitate vizuala).
+        Daca fisierul lipseste, <video> se auto-ascunde si static monogram ramane.
+        Vezi public/media/README.md pentru spec.
+      */}
+      <video
+        class="set-hero__video"
+        poster="/media/hero-sting-poster.jpg"
+        autoplay
+        muted
+        playsinline
+        preload="metadata"
+        aria-hidden="true"
+        data-hero-video
+      >
+        <source src="/media/hero-sting.webm" type="video/webm" />
+        <source src="/media/hero-sting.mp4" type="video/mp4" />
+      </video>
       <Monogram size="xl" color="black" />
     </div>
 
@@ -50,11 +69,37 @@ const { t } = Astro.props;
     gap: 24px;
   }
   .set-hero__monogram {
+    position: relative;
     margin-bottom: 16px;
     line-height: 0.85;
     cursor: pointer;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Sting video — overlay peste monograma statica.
+     Initial display: none (se aprinde via JS doar daca incarca cu succes). */
+  .set-hero__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: none;
+    pointer-events: none;
+  }
+  .set-hero__monogram.has-video .set-hero__video {
+    display: block;
+  }
+  /* Cand video e activ, monograma statica devine doar placeholder de spatiu
+     (ramane in markup pentru a11y dar e invizibila) */
+  .set-hero__monogram.has-video :global(.set-monogram) {
+    visibility: hidden;
+  }
+  /* Daca user-ul prefera reduced motion, video-ul NU se afiseaza chiar daca a incarcat. */
+  @media (prefers-reduced-motion: reduce) {
+    .set-hero__video { display: none !important; }
+    .set-hero__monogram.has-video :global(.set-monogram) { visibility: visible !important; }
   }
   .set-hero__monogram:focus-visible {
     outline: 2px dashed var(--set-black);
@@ -142,7 +187,9 @@ const { t } = Astro.props;
 </style>
 
 <script>
-  // Easter egg: tap pe monograma SET → animatie wave + spotlight pe E.
+  // ─────────────────────────────────────────────
+  // 1. Easter egg: tap pe monograma SET → wave + spotlight pe E.
+  // ─────────────────────────────────────────────
   const triggers = document.querySelectorAll<HTMLElement>('[data-monogram-trigger]');
   triggers.forEach((trigger) => {
     let isPlaying = false;
@@ -164,5 +211,39 @@ const { t } = Astro.props;
         play();
       }
     });
+  });
+
+  // ─────────────────────────────────────────────
+  // 2. Hero sting video: activeaza overlay-ul doar daca incarcarea reuseste.
+  //    Daca fisierul /media/hero-sting.mp4 lipseste, <video> da error si
+  //    ramane ascuns — monograma statica continua sa fie vizibila.
+  // ─────────────────────────────────────────────
+  const videos = document.querySelectorAll<HTMLVideoElement>('[data-hero-video]');
+  videos.forEach((video) => {
+    const parent = video.closest<HTMLElement>('.set-hero__monogram');
+    if (!parent) return;
+
+    // Verifica prefers-reduced-motion: daca user-ul prefera reducere, nu activam video.
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      // Suspendam complet video-ul (nu downloadam, nu activam).
+      video.remove();
+      return;
+    }
+
+    const enable = () => parent.classList.add('has-video');
+    const disable = () => parent.classList.remove('has-video');
+
+    // Daca a inceput sa joace, marcheaza overlay-ul activ.
+    video.addEventListener('playing', enable, { once: true });
+    // Pe loadeddata (primul frame disponibil), aprinde overlay-ul preventiv.
+    video.addEventListener('loadeddata', enable, { once: true });
+    // Daca incarcarea esueaza (fisier lipsa / 404 / format), ascundem.
+    video.addEventListener('error', disable);
+    // La fel pentru source-uri individuale.
+    video.querySelectorAll('source').forEach((s) => s.addEventListener('error', () => {
+      // Doar daca TOATE source-urile esueaza, ascundem; browser-ul incearca alternativ.
+      if (video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) disable();
+    }));
   });
 </script>
